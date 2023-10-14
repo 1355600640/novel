@@ -1,0 +1,49 @@
+
+#app{
+  --qing-color:40 102 246/96%;
+}
+.main-color{
+  color: rgb(var(--qing-color));
+}
+i{
+  font-style: normal;
+}
+*{
+  padding: 0;
+  margin: 0;
+}
+a{
+  text-decoration: none;
+}
+.qing-bg {
+  background-color:rgb(var(--qing-color)) !important;
+}
+.a-hover{
+  transition: all .3s ease;
+  &:hover{
+    color: rgb(var(--qing-color));
+  }
+}
+.center-view{
+  width: 1250px;
+  margin: 0 auto;
+}
+
+.text-color-tr{
+  transition: all .3s ease;
+  &:hover{
+    color: rgb(var(--qing-color));
+  }
+}
+.text-overflow{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+}
+.bright-text{
+  color: #999;
+}
+.dark-text{
+  color: #c6c4c4;
+}
+

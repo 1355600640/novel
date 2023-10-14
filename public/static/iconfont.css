@@ -1,0 +1,83 @@
+@font-face {
+  font-family: "iconfont"; /* Project id 4257807 */
+  src: url('iconfont.woff2?t=1697268168590') format('woff2'),
+       url('iconfont.woff?t=1697268168590') format('woff'),
+       url('iconfont.ttf?t=1697268168590') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-tushuguan:before {
+  content: "\e618";
+}
+
+.icon-bishuamoji3:before {
+  content: "\e67c";
+}
+
+.icon-bishuamoji37:before {
+  content: "\e686";
+}
+
+.icon-shufabichu39:before {
+  content: "\e6a2";
+}
+
+.icon-shufabichu41:before {
+  content: "\e6a6";
+}
+
+.icon-ziyuan:before {
+  content: "\e613";
+}
+
+.icon-liebiao1:before {
+  content: "\e60c";
+}
+
+.icon-liebiao2:before {
+  content: "\ec6b";
+}
+
+.icon-liebiao3:before {
+  content: "\e850";
+}
+
+.icon-laba1:before {
+  content: "\e614";
+}
+
+.icon-laba-:before {
+  content: "\e61f";
+}
+
+.icon-laba:before {
+  content: "\e608";
+}
+
+.icon-a-1shoucangB:before {
+  content: "\1015d";
+}
+
+.icon-feishu:before {
+  content: "\e91a";
+}
+
+.icon-liebiao:before {
+  content: "\e774";
+}
+
+.icon-bg-book:before {
+  content: "\e645";
+}
+
+.icon-shu-BOOK-shuji-yuedu:before {
+  content: "\e61a";
+}
+

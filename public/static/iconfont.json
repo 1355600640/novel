@@ -1,0 +1,128 @@
+{
+  "id": "4257807",
+  "name": "清风小说",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "15937896",
+      "name": "图书馆",
+      "font_class": "tushuguan",
+      "unicode": "e618",
+      "unicode_decimal": 58904
+    },
+    {
+      "icon_id": "16175785",
+      "name": "笔刷墨迹3",
+      "font_class": "bishuamoji3",
+      "unicode": "e67c",
+      "unicode_decimal": 59004
+    },
+    {
+      "icon_id": "16175809",
+      "name": "笔刷墨迹37",
+      "font_class": "bishuamoji37",
+      "unicode": "e686",
+      "unicode_decimal": 59014
+    },
+    {
+      "icon_id": "16193771",
+      "name": "书法笔触39",
+      "font_class": "shufabichu39",
+      "unicode": "e6a2",
+      "unicode_decimal": 59042
+    },
+    {
+      "icon_id": "16193781",
+      "name": "书法笔触41",
+      "font_class": "shufabichu41",
+      "unicode": "e6a6",
+      "unicode_decimal": 59046
+    },
+    {
+      "icon_id": "4143530",
+      "name": "列表",
+      "font_class": "ziyuan",
+      "unicode": "e613",
+      "unicode_decimal": 58899
+    },
+    {
+      "icon_id": "5485634",
+      "name": "列表",
+      "font_class": "liebiao1",
+      "unicode": "e60c",
+      "unicode_decimal": 58892
+    },
+    {
+      "icon_id": "5961366",
+      "name": "列表",
+      "font_class": "liebiao2",
+      "unicode": "ec6b",
+      "unicode_decimal": 60523
+    },
+    {
+      "icon_id": "8288858",
+      "name": "列表",
+      "font_class": "liebiao3",
+      "unicode": "e850",
+      "unicode_decimal": 59472
+    },
+    {
+      "icon_id": "18375426",
+      "name": "喇叭",
+      "font_class": "laba1",
+      "unicode": "e614",
+      "unicode_decimal": 58900
+    },
+    {
+      "icon_id": "2164220",
+      "name": "喇叭-01",
+      "font_class": "laba-",
+      "unicode": "e61f",
+      "unicode_decimal": 58911
+    },
+    {
+      "icon_id": "26503289",
+      "name": "喇叭",
+      "font_class": "laba",
+      "unicode": "e608",
+      "unicode_decimal": 58888
+    },
+    {
+      "icon_id": "37400522",
+      "name": "1收藏B",
+      "font_class": "a-1shoucangB",
+      "unicode": "1015d",
+      "unicode_decimal": 65885
+    },
+    {
+      "icon_id": "35160190",
+      "name": "飞书",
+      "font_class": "feishu",
+      "unicode": "e91a",
+      "unicode_decimal": 59674
+    },
+    {
+      "icon_id": "1837314",
+      "name": "列表",
+      "font_class": "liebiao",
+      "unicode": "e774",
+      "unicode_decimal": 59252
+    },
+    {
+      "icon_id": "11882900",
+      "name": "bg-book",
+      "font_class": "bg-book",
+      "unicode": "e645",
+      "unicode_decimal": 58949
+    },
+    {
+      "icon_id": "15463144",
+      "name": "书,BOOK,书籍,阅读",
+      "font_class": "shu-BOOK-shuji-yuedu",
+      "unicode": "e61a",
+      "unicode_decimal": 58906
+    }
+  ]
+}
