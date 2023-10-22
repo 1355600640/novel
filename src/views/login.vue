@@ -20,12 +20,14 @@
               <a-input
                 v-model="loginForm.username"
                 placeholder="请输入你的账号"
+                autocomplete
               />
             </a-form-item>
             <a-form-item field="密码" label="密码">
               <a-input-password
                 v-model="loginForm.password"
                 placeholder="请输入你的密码"
+                autocomplete
               />
             </a-form-item>
             <a-form-item
@@ -64,6 +66,7 @@
                 tabindex="1"
                 v-model="form.username"
                 placeholder="请输入你的账号"
+                autocomplete
               />
             </a-form-item>
             <a-form-item field="password" label="密码">
@@ -71,6 +74,7 @@
                 tabindex="2"
                 v-model="form.password"
                 placeholder="请输入你的密码"
+                autocomplete
               />
             </a-form-item>
             <a-form-item field="surePassword" label="确认密码">
@@ -78,6 +82,7 @@
                 tabindex="3"
                 v-model="form.surePassword"
                 placeholder="请再次输入你的密码"
+                autocomplete
               />
             </a-form-item>
             <a-form-item field="code" label="验证码">
@@ -87,7 +92,7 @@
                 placeholder="请输入验证码"
               />
               <img
-                style="cursor: pointer;width: 100px;"
+                style="cursor: pointer; width: 100px"
                 :preview="false"
                 :src="data.codeUrl"
                 class="pl-5"
@@ -144,7 +149,7 @@
   </div>
 </template>
 <script setup lang="ts">
-import { code, loginUser, registUser } from '../api/user'
+import { code, loginUser, registUser } from '../api/User'
 import { onMounted, reactive, ref, Ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
@@ -199,7 +204,7 @@ const rules = {
 }
 /**登录 */
 let login = () => {
-  loginUser(loginForm.value).then((r) => {
+  loginUser(loginForm.value).then((r: any) => {
     if (r.data.status == 200) {
       localStorage.setItem('novel_token', r.data.data.Token)
       router.push('/')
@@ -213,7 +218,7 @@ let regist = () => {
   if (form.value.password !== form.value.surePassword) {
     Message.error('两次密码不一致')
   } else {
-    registUser(form.value).then((r) => {
+    registUser(form.value).then((r: any) => {
       if (r.data.status == 200) {
         Message.success('注册成功')
         updateOverlayP(false)
@@ -226,7 +231,6 @@ let regist = () => {
         getCode()
       } else {
         getCode()
-        Message.clear()
         Message.error(r.data.data)
       }
     })
@@ -240,11 +244,10 @@ let getCode = () => {
     code({
       count: data.codeCount,
     }).then(
-      (r) => {
+      (r: any) => {
         if (r.data.status == 200) {
           data.codeUrl = r.data.data
           data.codeCount++
-          Message.clear()
         } else {
           Message.error(r.data.data)
         }

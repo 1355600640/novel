@@ -1,4 +1,5 @@
 import { get, post, response } from '../utils/RequestUtils'
+const urlPrefix = '/home'
 
 type randData = {
   type: String
@@ -16,7 +17,7 @@ type lastUpdatedDateType = {
  * @returns
  */
 export async function recommend(type?: String): response<any> {
-  return await get('/home/recommend', { type })
+  return await get(urlPrefix + '/recommend', { type })
 }
 
 /**
@@ -25,7 +26,7 @@ export async function recommend(type?: String): response<any> {
  * @returns
  */
 export async function ranking(data: randData): response<any> {
-  return await get('/home/ranking', data)
+  return await get(urlPrefix + '/ranking', data)
 }
 
 /**
@@ -33,7 +34,7 @@ export async function ranking(data: randData): response<any> {
  * @returns
  */
 export async function lastUpdated(data: lastUpdatedDateType): response<any> {
-  return await get('/home/lastUpdated', data)
+  return await get(urlPrefix + '/lastUpdated', data)
 }
 
 /**
@@ -41,5 +42,5 @@ export async function lastUpdated(data: lastUpdatedDateType): response<any> {
  * @returns 获取系统公告
  */
 export async function announcement(): response<any> {
-  return await get('/home/announcement')
+  return await get(urlPrefix + '/announcement')
 }

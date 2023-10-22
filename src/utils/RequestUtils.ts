@@ -4,7 +4,7 @@ import { AxiosResponse } from 'axios'
 type data<T> = {
   status: number
   message: string
-  data: T|any
+  data: T
 }
 export type response<T> = Promise<AxiosResponse<data<T>>>
 

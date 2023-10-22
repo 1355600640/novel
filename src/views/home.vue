@@ -22,14 +22,17 @@
             effect="coverflow"
           >
             <SwiperSlide v-for="i in homeBanner.carousel" :key="(i as any).id">
-              <!-- DOTO 书本跳转 -->
+              <!-- TODO 书本跳转 -->
               <div class="swiper_item">
                 <div class="swiper_conetent">
                   <div class="swiper_image">
                     <img-loading :url="(i as any).picUrl" />
                   </div>
                   <div class="book_session flex flex-col justify-between">
-                    <div class="text-color-tr text-xl text-center">
+                    <div
+                      @click="$router.push(`/detail/${i.id}`)"
+                      class="text-color-tr text-xl text-center"
+                    >
                       {{ (i as any).bookName }}
                     </div>
                     <div class="text-color-tr text-base text-slate-600">
@@ -73,11 +76,15 @@
               v-for="book in homeBanner.weekRecommend"
               :key="book.id"
             >
-              <!-- TODO 跳转分类 and 书名跳转 -->
+              <!-- TODO 跳转分类 -->
               <div :title="book.categoryName" class="text-slate-400">
                 「{{ book.categoryName }}」
               </div>
-              <div :title="book.bookName" class="w-36 ml-1">
+              <div
+                @click="router.push(`/detail/${book.id}`)"
+                :title="book.bookName"
+                class="w-36 ml-1"
+              >
                 {{ book.bookName }}
               </div>
             </div>
@@ -129,8 +136,8 @@
       <div class="category-book">
         <div :class="{ 'tag-hover': selectCategory == 0 }">全部</div>
         <div
-        :class="{ 'tag-hover': selectCategory == index+1 }"
-          @click="toggleModulesCategory(index+1)"
+          :class="{ 'tag-hover': selectCategory == index + 1 }"
+          @click="toggleModulesCategory(index + 1)"
           v-for="(item, index) in category"
           :key="item.id"
         >
@@ -167,8 +174,11 @@
               data-index="bookName"
             >
               <template #cell="{ record }">
-                <span class="a-hover cursor-pointer">
-                  {{ record.lastChapterName }}
+                <span
+                  @click="$router.push(`/detail/${record.id}`)"
+                  class="a-hover cursor-pointer"
+                >
+                  {{ record.bookName }}
                 </span>
               </template>
             </a-table-column>
@@ -180,8 +190,11 @@
               data-index="lastChapterName"
             >
               <template #cell="{ record }">
-                <span class="a-hover cursor-pointer">
-                  {{ record.lastChapterName }}
+                <span
+                  @click="$router.push(`/chapter/${record.id}/${record.num}`)"
+                  class="a-hover cursor-pointer"
+                >
+                  {{ numberToCapital(record.lastChapterName) }}
                 </span>
               </template>
             </a-table-column>
@@ -255,15 +268,14 @@
 </template>
 <script lang="ts" setup>
 import bookRank from '../components/BookRank.vue'
-import { recommend, announcement, ranking, lastUpdated } from '../api/home'
+import { recommend, announcement, ranking, lastUpdated } from '../api/Home'
 import { Ref, onMounted, ref, reactive } from 'vue'
-import { mainStore } from '../store'
-import { storeToRefs } from 'pinia'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import typeSwiper from 'swiper'
 import { Autoplay, Navigation, EffectCoverflow } from 'swiper/modules'
 import imgLoading from '../components/ImgLoading.vue'
-
+import { useRouter } from 'vue-router'
+const router = useRouter()
 const modules = [Autoplay, Navigation, EffectCoverflow]
 type banner = {
   carousel: any[]
@@ -293,8 +305,6 @@ let homeBanner: Ref<banner> = ref({
   },
   modelBook: [],
 })
-const useMainStore = mainStore()
-const { imgUrl } = storeToRefs(useMainStore)
 const swiper_left: Ref<typeSwiper> = ref() as Ref<typeSwiper>
 let swiperIndex = ref(0)
 
@@ -320,24 +330,16 @@ let bookModulesColumns = ref([
     dataIndex: 'authorName',
   },
 ])
+import { stringToDate, numberToCapital } from '../utils/commonUtils'
 const getLastUpdate = async (mode: Number, type?: String) => {
   await lastUpdated({ mode, type }).then((r) => {
     if (r.data.status == 200) {
       homeBanner.value.modelBook = r.data.data.map(
         (r: { lastChapterUpdateTime: string | number | Date }) => {
-          const date = new Date(r.lastChapterUpdateTime)
-          r.lastChapterUpdateTime =
-            date.getFullYear() +
-            '-' +
-            ((date.getMonth() >= 10 ? '' : '0') + date.getMonth()) +
-            '-' +
-            ((date.getDay() >= 10 ? '' : '0') + date.getDay()) +
-            ' ' +
-            ((date.getHours() >= 10 ? '' : '0') + date.getHours()) +
-            ':' +
-            ((date.getMinutes() >= 10 ? '' : '0') + date.getMinutes()) +
-            ':' +
-            ((date.getSeconds() >= 10 ? '' : '0') + date.getSeconds())
+          r.lastChapterUpdateTime = stringToDate(
+            r.lastChapterUpdateTime as string,
+            'all'
+          )
           return r
         }
       )
@@ -412,7 +414,6 @@ const onSwiper = (swiper: typeSwiper) => {
 // 大轮播图切换后，切换小轮播图状��1�7
 const sliderMove = (swiper: typeSwiper) => {
   swiperIndex.value = swiper.realIndex
-  console.log(swiper)
 }
 
 const hotBook = ref<InstanceType<typeof bookRank>>()
@@ -424,7 +425,7 @@ let scrollRequestStatus = {
   recommend: false,
   premiumBook: false,
 }
-import { getCategoryName } from '../api/category'
+import { getCategoryName } from '../api/Category'
 let category = reactive([] as any[])
 onMounted(() => {
   getHomeData()
@@ -434,9 +435,11 @@ onMounted(() => {
   })
   window.addEventListener('scroll', () => {
     const windowHeight = window.innerHeight
+    const boxDistanceTop = 50
     // 懒加载推荐列表
     if (
-      windowHeight - hotBook.value?.$el.getBoundingClientRect().y >= 100 &&
+      windowHeight - hotBook.value?.$el.getBoundingClientRect().y >=
+        boxDistanceTop &&
       homeBanner.value.recommend.hotBook.length == 0 &&
       !scrollRequestStatus.recommend
     ) {
@@ -444,7 +447,8 @@ onMounted(() => {
       getRecommendAndRank('3', '0', 10, 'hotBook', 'clickBook').then(() => {})
     }
     if (
-      windowHeight - premiumBook.value?.$el.getBoundingClientRect().y >= 100 &&
+      windowHeight - premiumBook.value?.$el.getBoundingClientRect().y >=
+        boxDistanceTop &&
       homeBanner.value.recommend.premiumBook.length == 0 &&
       !scrollRequestStatus.premiumBook
     ) {
@@ -456,7 +460,8 @@ onMounted(() => {
     // 最近更新/完结懒加载
     if (
       bookModules.value &&
-      windowHeight - bookModules.value?.getBoundingClientRect().y >= 100 &&
+      windowHeight - bookModules.value?.getBoundingClientRect().y >=
+        boxDistanceTop &&
       modulesStatus != bookModulesStatus.value &&
       homeBanner.value.modelBook.length == 0
     ) {

@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getUserSession } from '../api/user'
+import { getUserSession } from '../api/User'
 export const mainStore = defineStore('main', {
   state() {
     return {
@@ -10,7 +10,7 @@ export const mainStore = defineStore('main', {
   getters: {},
   actions: {
     getUser() {
-      getUserSession().then((r) => {
+      getUserSession().then((r:any) => {
         this.user = r.data.data
       })
     },

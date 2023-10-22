@@ -17,13 +17,15 @@
             >
               <img-loading
                 style="height: 100%"
-                :style="index == 0 ? 'width: 65%' : 'width:100%'"
+                :style="[index == 0 ? 'width: 65%' : `width:100%','background:url(${(item as any).picUrl}) no-repeat center center;`]"
                 :url="(item as any).picUrl"
               />
               <div class="book-introduce">
-                <span class="text-xl a-hover cursor-pointer">{{
-                  item.bookName
-                }}</span>
+                <span
+                  @click="$router.push(`/detail/${item.id}`)"
+                  class="text-xl a-hover cursor-pointer"
+                  >{{ item.bookName }}</span
+                >
                 <div
                   :title="item.bookDesc"
                   v-show="index > 0"
@@ -84,7 +86,10 @@
                 <img v-else :src="getIcon(index + 1)" alt="" />
               </div>
               <div class="bookname flex flex-col">
-                <div class="name a-hover">
+                <div
+                  @click="$router.push(`/detail/${item.id}`)"
+                  class="name a-hover"
+                >
                   {{ item.bookName }}
                 </div>
                 <div
@@ -108,6 +113,7 @@
                 <div
                   style="height: 100%; border-radius: 8px; overflow: hidden"
                   :class="{ hidden: index != selectBook }"
+                  @click="$router.push(`/detail/${item.id}`)"
                 >
                   <img-loading :url="item.picUrl" />
                 </div>
@@ -140,7 +146,7 @@ const props = defineProps([
     grid-template-columns: 8fr 2fr;
     gap: 20px;
     .book-ranking {
-      min-height: 300px;
+      min-height: calc(140 * 3px);
       .ranking-list {
         display: flex;
         flex-direction: column;
@@ -206,23 +212,37 @@ const props = defineProps([
         grid-template-columns: 1fr 1fr 1fr;
         gap: 50px 40px;
         .hoot-book-item {
-          display: grid;
+          // display: grid;
           height: 140px;
           gap: 10px;
-          grid-template-columns: 1fr 2fr;
+          // grid-template-columns: 1fr 2fr;
+          display: flex;
+          flex-direction: row;
+          div {
+            &:first-child {
+              width: 32%;
+            }
+            &:last-child {
+              width: 68%;
+            }
+          }
 
           @at-root :deep .arco-image {
             box-shadow: 6px 4px 11px #b5b4b4;
             overflow: hidden;
             border-radius: 6px;
             box-sizing: border-box;
+            background: url() no-repeat center center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             &:hover .arco-image-img {
               transform-origin: center center;
               transform: scale(1.2);
             }
             .arco-image-img {
               width: 100%;
-              transform: rotate(0deg);
+              transform: scale(1);
               transition: all 0.3s ease;
             }
           }

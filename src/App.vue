@@ -2,14 +2,18 @@
   <div id="app" class="bright">
     <PageHeader v-if="route.meta.pageHeader" />
     <NavigationBar v-if="route.meta.navigationBar" />
-    <router-view />
-    <page-footer />
+    <keep-alive>
+      <router-view :key="$route.fullPath"></router-view>
+    </keep-alive>
+    <page-footer v-show="!$route.meta.displayBottom" />
+    <backTop />
   </div>
 </template>
 <script lang="ts" setup>
 import PageHeader from './components/PageHeader.vue'
 import NavigationBar from './components/NavigationBar.vue'
 import PageFooter from './components/PageFooter.vue'
+import backTop from './components/BackTop.vue'
 import { useRoute } from 'vue-router'
 const route = useRoute()
 </script>
@@ -20,5 +24,6 @@ const route = useRoute()
   width: 100%;
   min-width: 1000px;
   min-height: 100vh;
+  position: relative;
 }
 </style>
