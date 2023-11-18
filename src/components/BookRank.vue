@@ -8,58 +8,13 @@
       <a-spin :loading="props.recommendBook.length == 0">
         <div class="hoot-book">
           <div class="hoot-book-list">
-            <div
-              class="hoot-book-item"
+            <book-card
               v-for="(item, index) in props.recommendBook"
-              :class="{ 'cursor-pointer': index > 0 }"
               :key="item.id"
-              show-loader
-            >
-              <img-loading
-                style="height: 100%"
-                :style="[index == 0 ? 'width: 65%' : `width:100%','background:url(${(item as any).picUrl}) no-repeat center center;`]"
-                :url="(item as any).picUrl"
-              />
-              <div class="book-introduce">
-                <span
-                  @click="$router.push(`/detail/${item.id}`)"
-                  class="text-xl a-hover cursor-pointer"
-                  >{{ item.bookName }}</span
-                >
-                <div
-                  :title="item.bookDesc"
-                  v-show="index > 0"
-                  class="text-slate-400 a-hover"
-                  v-html="(item.bookDesc as any)"
-                />
-                <span class="text-xs text-slate-400">
-                  <span class="a-hover cursor-pointer">{{
-                    item.authorName
-                  }}</span>
-                  <span v-if="index > 0" class="mx-1">·</span>
-                  <span class="a-hover">{{
-                    index > 0 ? item.categoryName : ''
-                  }}</span>
-                </span>
-                <div
-                  :title="item.bookDesc"
-                  v-show="index == 0"
-                  class="text-slate-400"
-                  v-html="(item.bookDesc as any)"
-                />
-              </div>
-              <a-button
-                v-if="index == 0"
-                class="text-2xl"
-                style="
-                  background: linear-gradient(324deg, #e60000, #ff6114);
-                  padding: 17px 32px;
-                "
-                type="primary"
-                shape="round"
-                >书籍详情</a-button
-              >
-            </div>
+              :item="item"
+              :index="index"
+              :format="true"
+            />
           </div>
         </div>
       </a-spin>
@@ -126,6 +81,7 @@
   </div>
 </template>
 <script lang="ts" setup>
+import BookCard from './BookCard.vue'
 import imgLoading from '../components/ImgLoading.vue'
 import { ref } from 'vue'
 let selectBook = ref(0)
@@ -211,86 +167,26 @@ const props = defineProps([
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
         gap: 50px 40px;
-        .hoot-book-item {
-          // display: grid;
-          height: 140px;
-          gap: 10px;
-          // grid-template-columns: 1fr 2fr;
-          display: flex;
-          flex-direction: row;
-          div {
-            &:first-child {
-              width: 32%;
-            }
-            &:last-child {
-              width: 68%;
-            }
-          }
-
-          @at-root :deep .arco-image {
-            box-shadow: 6px 4px 11px #b5b4b4;
-            overflow: hidden;
-            border-radius: 6px;
-            box-sizing: border-box;
-            background: url() no-repeat center center;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            &:hover .arco-image-img {
-              transform-origin: center center;
-              transform: scale(1.2);
-            }
-            .arco-image-img {
-              width: 100%;
-              transform: scale(1);
-              transition: all 0.3s ease;
-            }
-          }
-
-          .book-introduce {
-            justify-content: space-around;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            > div {
-              text-align: left;
-              overflow: hidden;
-              text-overflow: ellipsis;
-              display: -webkit-box;
-              -webkit-line-clamp: 2;
-              -webkit-box-orient: vertical;
-              white-space: normal;
-              text-indent: -2em;
-            }
-            > span:last-child {
-              font-size: 12px;
-            }
-          }
-          &:first-child {
-            display: flex;
-            grid-row: 1/4;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            background: linear-gradient(#edf3f7, #ffffff);
-            gap: 15px 0;
-            box-sizing: border-box;
-            padding: 30px 20px;
-            :deep .arco-image {
-              height: 50% !important;
-              width: auto;
-            }
-            .book-introduce {
-              align-items: center;
-              > div {
-                -webkit-line-clamp: 3;
-                text-indent: 0;
-              }
-            }
-          }
-        }
       }
+    }
+  }
+  @at-root :deep .arco-image {
+    box-shadow: 6px 4px 11px #b5b4b4;
+    overflow: hidden;
+    border-radius: 6px;
+    box-sizing: border-box;
+    background: url() no-repeat center center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    &:hover .arco-image-img {
+      transform-origin: center center;
+      transform: scale(1.2);
+    }
+    .arco-image-img {
+      width: 100%;
+      transform: scale(1);
+      transition: all 0.3s ease;
     }
   }
 }

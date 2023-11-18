@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
 
-const routes = []
 const router = createRouter({
   history: createWebHistory('/'),
   routes: [
@@ -49,6 +48,24 @@ const router = createRouter({
       meta: { pageHeader: true, noLogin: true, navigationBar: false },
       component: () => import('../views/Chapter.vue'),
     },
+    {
+      path: '/category/:index?',
+      name: 'category',
+      meta: { pageHeader: true, noLogin: true, showCategory: true },
+      component: () => import('../views/Category.vue'),
+    },
+    {
+      path: '/people/:id?',
+      name: 'people',
+      meta: { pageHeader: true, noLogin: true, showCategory: true },
+      component: () => import('../views/people.vue'),
+    },
+    {
+      path: '/:pathMatch(.*)*',
+      name: 'error',
+      meta: { pageHeader: true, noLogin: true, showCategory: true },
+      component: () => import('../views/404.vue'),
+    },
   ],
 })
 /**
@@ -59,7 +76,7 @@ router.onError((handler) => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (!to.meta.noLogin && !localStorage.getItem('novel_token')) {
+  if (to.meta.noLogin == false && !localStorage.getItem('novel_token')) {
     next({
       name: 'login',
     })

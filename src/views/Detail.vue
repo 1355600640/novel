@@ -25,11 +25,15 @@
           </div>
           <div class="book-tags">
             <div
+              @click="
+                $router.push('/category/' + bookSession.bookInfo?.categoryId)
+              "
               style="border-color: rgb(250, 174, 34); color: rgb(250, 174, 34)"
             >
               {{ bookSession.bookInfo?.categoryName }}
             </div>
             <div
+            @click="$router.push(`/category?status=${bookSession.bookInfo?.bookStatus}`)"
               :style="[
                 `border-color:${
                   bookSession.bookInfo?.bookStatus == 0 ? '#2687d9' : 'red'
@@ -84,12 +88,12 @@
             }}</span>
           </div>
           <div class="book-button">
-            <!-- TODO -->
             <button
               @click="$router.push(`/chapter/${bookSession.bookInfo.id}`)"
             >
               立即阅读
             </button>
+            <!-- TODO 加入书架-->
             <button>加入书架</button>
           </div>
         </div>

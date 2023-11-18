@@ -1,58 +1,75 @@
 <template>
-  <a-affix @change="showCategory">
-    <div id="hearder">
-      <div @click="router.push('/')" class="logo cursor-pointer">
-        <img src="../../public/book.svg" alt="" />
-        <span class="text-xl italic font-bold font-mono">清风文学网</span>
-      </div>
-      <div
-        class="category"
-        :style="`--showCategory:${homePageOfShowCategory}`"
-        ref="categoryDom"
-        v-if="$route.meta.showCategory"
-      >
-        <div>
-          <div
-            v-for="(item, index) in headCategory"
-            @mouseover="hoverCategory = index + 1"
-            @mouseout="hoverCategory = 0"
-            :class="{ categoryHover: hoverCategory == index + 1 }"
-          >
-            <span class="a-hover">{{ item }}</span>
-            <div class="book-category" v-if="item == '分类'">
-              <!-- TODO 分类跳转 -->
-              <div>
-                <div class="cursor-pointer" v-for="ic in category">
-                  {{ ic.name }}
+  <div id="pageHeader">
+    <a-affix @change="showCategory">
+      <div id="hearder">
+        <div @click="router.push('/')" class="logo cursor-pointer">
+          <a-image
+            :preview="false"
+            width="50"
+            height="50"
+            src="../../public/book.svg"
+          />
+          <span class="text-xl italic font-bold font-mono">清风文学网</span>
+        </div>
+        <div
+          class="category"
+          :style="`--showCategory:${homePageOfShowCategory}`"
+          ref="categoryDom"
+          v-if="$route.meta.showCategory"
+        >
+          <div>
+            <div
+              v-for="(item, index) in headCategory"
+              @mouseover="hoverCategory = index + 1"
+              @mouseout="hoverCategory = 0"
+              :class="{ categoryHover: hoverCategory == index + 1 }"
+            >
+              <span @click="$router.push(item.href)" class="a-hover">{{
+                item.name
+              }}</span>
+              <div
+                style="z-index: 999"
+                class="book-category"
+                v-if="item.name == '分类'"
+              >
+                <!-- TODO 分类跳转 -->
+                <div>
+                  <div
+                    @click="$router.push(`/category/${ic.id}`)"
+                    class="cursor-pointer"
+                    v-for="ic in category"
+                  >
+                    {{ ic.name }}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
-      <div class="search">
-        <a-input-search
-          :style="{ width: '320px' }"
-          placeholder="书名、作者、关键词"
-          v-model="search"
-          search-button
-        />
-      </div>
-
-      <!-- 未登录 -->
-      <div class="user">
-        <!-- TODO 已登录 -->
-        <div v-if="user && Object.keys(user).length > 0" class="is-login">
-          <div class="a-hover">
-            <i class="iconfont icon-bg-book mr-1.5"></i>我的书架
-          </div>
-          <div class="a-hover">{{ (user as any).nickName }}</div>
-          <div class="a-hover">退出</div>
+        <div class="search">
+          <a-input-search
+            :style="{ width: '320px' }"
+            placeholder="书名、作者、关键词"
+            v-model="search"
+            search-button
+          />
         </div>
-        <div @click="router.push('/login')" v-else class="no-login">登录</div>
+
+        <!-- 未登录 -->
+        <div class="user">
+          <!-- TODO 已登录 -->
+          <div v-if="user && Object.keys(user).length > 0" class="is-login">
+            <div class="a-hover">
+              <i class="iconfont icon-bg-book mr-1.5"></i>我的书架
+            </div>
+            <div class="a-hover">{{ (user as any).nickName }}</div>
+            <div class="a-hover">退出</div>
+          </div>
+          <div @click="router.push('/login')" v-else class="no-login">登录</div>
+        </div>
       </div>
-    </div>
-  </a-affix>
+    </a-affix>
+  </div>
 </template>
 <script lang="ts" setup>
 import { ref, reactive, Ref, watch } from 'vue'
@@ -73,7 +90,13 @@ watch(route, () => {
 })
 
 let hoverCategory = ref(0)
-const headCategory = reactive(['首页', '分类', '排行', '书库', '完本'])
+const headCategory = reactive([
+  { name: '首页', href: '/' },
+  { name: '分类', href: '/category' },
+  { name: '排行', href: '' },
+  { name: '书库', href: '' },
+  { name: '完本', href: '' },
+])
 let category: Ref<any[]> = ref([])
 let search = ref('')
 const categoryDom = ref()
@@ -129,6 +152,8 @@ const showCategory = (fixed: boolean) => {
     transform: scaleX(var(--showCategory));
     transition: all 0.3s ease;
     margin-left: 20px;
+    position: relative;
+    z-index: 99;
     > div {
       display: flex;
       > div {
@@ -148,7 +173,7 @@ const showCategory = (fixed: boolean) => {
           left: 50%;
           padding-top: 35px;
           transform: translateX(-50%);
-          z-index: 99;
+          // z-index: 99999;
           > div {
             background: white;
             border-radius: 16px;
@@ -180,7 +205,7 @@ const showCategory = (fixed: boolean) => {
           right: 50%;
           width: 80%;
           height: 2px;
-          background: red;
+          background: rgb(var(--qing-color));
         }
       }
       .categoryHover {

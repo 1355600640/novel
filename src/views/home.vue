@@ -25,7 +25,10 @@
               <!-- TODO 书本跳转 -->
               <div class="swiper_item">
                 <div class="swiper_conetent">
-                  <div class="swiper_image">
+                  <div
+                    class="swiper_image"
+                    @click="$router.push(`/detail/${i.id}`)"
+                  >
                     <img-loading :url="(i as any).picUrl" />
                   </div>
                   <div class="book_session flex flex-col justify-between">
@@ -39,6 +42,7 @@
                       {{ (i as any).authorName }}
                     </div>
                     <div
+                      @click="$router.push(`/detail/${i.id}`)"
                       class="book_intro"
                       style="color: #6b7280"
                       v-html="(i as any).bookDesc"
@@ -76,8 +80,12 @@
               v-for="book in homeBanner.weekRecommend"
               :key="book.id"
             >
-              <!-- TODO 跳转分类 -->
-              <div :title="book.categoryName" class="text-slate-400">
+              <!--  跳转分类 -->
+              <div
+                @click="$router.push(`/category/${book.categoryId}`)"
+                :title="book.categoryName"
+                class="text-slate-400"
+              >
                 「{{ book.categoryName }}」
               </div>
               <div
@@ -98,7 +106,7 @@
           <span style="color: #d11f43" class="ml-2">公告</span>
         </div>
         <div class="banner_announcement_item flex flex-col gap-5 mt-5">
-          <!-- 公告跳转 -->
+          <!-- TODO 公告跳转 -->
           <div class="" v-for="item in homeBanner.announcement" :key="item.id">
             {{ item.title }}
           </div>
@@ -715,7 +723,7 @@ const toggleModulesCategory = (index: number) => {
         }
       }
     }
-    .no-last-update {
+    @at-root .no-last-update {
       height: calc(40.8 * 15px);
       display: flex;
       justify-content: center;

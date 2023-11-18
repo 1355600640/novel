@@ -2,9 +2,11 @@
   <div id="app" class="bright">
     <PageHeader v-if="route.meta.pageHeader" />
     <NavigationBar v-if="route.meta.navigationBar" />
-    <keep-alive>
-      <router-view :key="$route.fullPath"></router-view>
-    </keep-alive>
+    <router-view :key="$route.fullPath" v-slot="{ Component }">
+      <keep-alive>
+        <component :is="Component" />
+      </keep-alive>
+    </router-view>
     <page-footer v-show="!$route.meta.displayBottom" />
     <backTop />
   </div>

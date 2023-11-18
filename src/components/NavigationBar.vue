@@ -2,11 +2,11 @@
   <div id="navigationBar" ref="navigationBar">
     <div class="center">
       <div
-        v-for="(text, i) in list"
+        v-for="(text, i) in urlList"
         @click="clickTab(i, $event)"
         :class="'head_tab' + i"
       >
-        {{ text }}
+        {{ text.name }}
       </div>
       <span class="move"></span>
     </div>
@@ -16,12 +16,24 @@
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { ref } from 'vue'
-const list = reactive(['首页', '全部作品', '排行榜', '充值', '作家专区'])
+import { useRouter } from 'vue-router'
+const urlList = reactive([
+  {
+    name: '首页',
+    url: '/',
+  },
+  { name: '分类', url: '/category' },
+  { name: '排行榜', url: '' },
+  { name: '充值', url: '' },
+  { name: '作家专区', url: '' },
+])
 // const urls = reactive([])
 let index = ref(0)
 let navigationBar = ref(null)
+const router = useRouter()
 const clickTab = (i: number, e: Event) => {
   index.value = i
+  router.push(urlList[i].url)
   setMove(e.target as HTMLElement)
   // TODO 跳转页面
 }

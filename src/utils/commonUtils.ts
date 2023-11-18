@@ -63,10 +63,10 @@ export function numberToCapital(str: string): string {
     }
 
     str = str.replace('第' + number, '第' + capitalNumber)
-    console.log(str)
+    // console.log(str)
   } else if (str.indexOf('第') != 0 && str.includes('章')) {
     str = '第' + str
   }
-  console.log(str)
+  // console.log(str)
   return str
 }
