@@ -74,7 +74,6 @@
         </div>
       </a-spin>
 
-      <!-- TODO 翻页 -->
       <div v-if="bookList?.length > 0" class="category-paginatio">
         <a-pagination
           :total="pageData.count - 0"
@@ -90,11 +89,12 @@
 <script lang="ts" setup>
 import BookCard from '../components/BookCard.vue'
 import { getCategoryForId, getCategoryName } from '../api/Category'
-import { ref, Ref, reactive, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { ref, Ref, onMounted, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import error from './404.vue'
-const route = useRoute()
-let pageData = reactive({
+const route = useRoute(),
+  router = useRouter()
+let pageData = ref({
   id: 0,
   page: 1,
   total: 15,
@@ -158,16 +158,16 @@ let pageList: Ref<pageListType[]> = ref([
 ])
 let bookList: Ref<any[]> = ref([])
 const getBookList = () => {
-  pageData.loading = true
+  pageData.value.loading = true
   getCategoryForId({
-    ...pageData,
-    id: pageData.id,
-    isCharge: pageData.isCharge - 1,
-    status: pageData.status - 1,
+    ...pageData.value,
+    id: pageData.value.id,
+    isCharge: pageData.value.isCharge - 1,
+    status: pageData.value.status - 1,
   }).then((r) => {
-    pageData.loading = false
+    pageData.value.loading = false
     bookList.value = r.data.data.bookList
-    pageData.count = r.data.data.count
+    pageData.value.count = r.data.data.count
   })
 }
 const getCategory = async () => {
@@ -175,13 +175,18 @@ const getCategory = async () => {
     pageList.value[0].list = [{ name: '全部', id: '0' }, ...r.data.data]
   })
 }
+
 const showList = (parant: pageListType, index: number, child: any) => {
-  pageData.page = 1
-  ;(pageData as any)[parant.stats] = child.id || index
-  getBookList()
+  pageData.value.page = 1
+  if (parant.stats == 'id') {
+    router.push(`/category/${child.id}`)
+  } else {
+    ;(pageData as any)[parant.stats] = child.id
+    getBookList()
+  }
 }
 const toPage = (pageNum: number): void => {
-  pageData.page = pageNum
+  pageData.value.page = pageNum
   getBookList()
 }
 
@@ -204,10 +209,18 @@ const nameIsString = (
     data = parseInt(routeValue as string) + (name && name == 'id' ? 0 : 1) || 0
   return data ? data : defaultValue
 }
+watch(route, () => {
+  pageData.value.page = 1
+  ;(pageData as any)[pageList.value[0].stats] = route.params.index as string
+  getBookList()
+})
 onMounted(() => {
+  if (route.query.serialize) {
+    pageData.value.status = 1
+  }
   const getValue = ['status', 'isCharge', 'words', 'timeSort']
   getCategory().then(() => {
-    pageData.id = nameIsString(
+    pageData.value.id = nameIsString(
       pageList.value[0].list,
       route.params?.index as string,
       0,
@@ -236,6 +249,7 @@ onMounted(() => {
   margin: 30px auto 80px;
   display: flex;
   gap: 50px;
+  min-width: 1000px;
   .left-category {
     display: flex;
     width: 20%;

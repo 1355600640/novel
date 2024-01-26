@@ -1,5 +1,6 @@
+import { Message } from '@arco-design/web-vue'
+import { response } from '../utils/RequestUtils'
 import axios from 'axios'
-
 const instance = axios.create({
   withCredentials: false,
   timeout: 15000,
@@ -23,9 +24,11 @@ instance.interceptors.request.use(
 // 响应拦截器
 instance.interceptors.response.use((response) => {
   if (response.status === 200) {
-    if (response.data.errorCode !== 200) {
-      if (response.data.errorCode === 405) {
+    if (response.data.status !== 200) {
+      Message.error(response.data.message || '参数错误')
+      if (response.data.status === 405) {
         // 跳转到登录页
+        history.pushState({ page: 'login' }, 'login', '/login')
       }
     }
   }

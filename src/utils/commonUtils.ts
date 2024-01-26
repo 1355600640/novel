@@ -1,4 +1,10 @@
-﻿export function stringToDate(
+﻿/**
+ * 格式化data类型
+ * @param dateCode 待转换参数
+ * @param model all 显示全部时间
+ * @returns
+ */
+export function stringToDate(
   dateCode: string | number,
   model: 'all' | 'date'
 ): string {
@@ -22,6 +28,12 @@
   return dateString
 }
 
+/**
+ * 数字转换以万为单位，保留小鼠
+ * @param number 待转换的数字
+ * @param norm 保留位数
+ * @returns
+ */
 export function normNumber(number: number, norm: number): string {
   if (norm > 4) norm = 0
   let str = ''
@@ -69,4 +81,15 @@ export function numberToCapital(str: string): string {
   }
   // console.log(str)
   return str
+}
+
+/**
+ * 计算日期到现在的具体天数,向上取整
+ * @param date
+ */
+export function dateToNum(date: string): number {
+  const nowDate = Date.now()
+  const lastDate = new Date(date).valueOf()
+  let day = Math.ceil((nowDate - lastDate) / 60 / 60 / 60 / 24)
+  return day
 }

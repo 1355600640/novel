@@ -1,8 +1,8 @@
 @font-face {
   font-family: "iconfont"; /* Project id 4257807 */
-  src: url('iconfont.woff2?t=1697268168590') format('woff2'),
-       url('iconfont.woff?t=1697268168590') format('woff'),
-       url('iconfont.ttf?t=1697268168590') format('truetype');
+  src: url('iconfont.woff2?t=1706198672678') format('woff2'),
+       url('iconfont.woff?t=1706198672678') format('woff'),
+       url('iconfont.ttf?t=1706198672678') format('truetype');
 }
 
 .iconfont {
@@ -11,6 +11,50 @@
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-xiangqing1:before {
+  content: "\e61b";
+}
+
+.icon-31pinglun:before {
+  content: "\e601";
+}
+
+.icon-fanhuidingbu:before {
+  content: "\e65b";
+}
+
+.icon-tingshu-mulu:before {
+  content: "\e620";
+}
+
+.icon-xiangqing:before {
+  content: "\e622";
+}
+
+.icon-icon-test:before {
+  content: "\e62e";
+}
+
+.icon-guiye:before {
+  content: "\e624";
+}
+
+.icon-icon-test1:before {
+  content: "\e600";
+}
+
+.icon-tubiao-:before {
+  content: "\e605";
+}
+
+.icon-remen:before {
+  content: "\e62c";
+}
+
+.icon-buzhilangdurenwulangdu:before {
+  content: "\e621";
 }
 
 .icon-tushuguan:before {

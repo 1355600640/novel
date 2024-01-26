@@ -23,7 +23,7 @@ const urlList = reactive([
     url: '/',
   },
   { name: '分类', url: '/category' },
-  { name: '排行榜', url: '' },
+  { name: '排行榜', url: '/rank' },
   { name: '充值', url: '' },
   { name: '作家专区', url: '' },
 ])

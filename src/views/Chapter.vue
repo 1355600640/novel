@@ -4,10 +4,11 @@
     <div class="book_category">
       <span class="cursor-pointer" @click="$router.push('/')">首页</span>
       <span><icon-right /></span>
-      <!-- TODO 跳转分类 -->
-      <span class="cursor-pointer">{{
-        pageContent.bookInfo?.categoryName
-      }}</span>
+      <span
+        @click="$router.push(`/category/${pageContent.bookInfo?.categoryId}`)"
+        class="cursor-pointer"
+        >{{ pageContent.bookInfo?.categoryName }}</span
+      >
       <span><icon-right /></span>
       <span>{{ pageContent.bookInfo?.bookName }}</span>
     </div>
@@ -68,43 +69,75 @@
 import { stringToDate, normNumber, numberToCapital } from '../utils/commonUtils'
 import ImgLoading from '../components/ImgLoading.vue'
 import { bookContent, bookContentT } from '../api/BookInfo'
-import { ref, onMounted, Ref } from 'vue'
+import { ref, onMounted, Ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
+import { mainStore } from '../store'
+import { storeToRefs } from 'pinia'
 const route = useRoute()
 const router = useRouter()
 type pageSessionType = {
   page: string
   bookId: string
+  pageId: string
 }
 let pageContent: Ref<bookContentT> = ref({} as bookContentT)
 let pageSession: Ref<pageSessionType> = ref({
   page: '0',
   bookId: '',
+  pageId: '',
 })
 
+const useMianStore = mainStore()
+let { pageButton } = storeToRefs(useMianStore)
+
+watch(
+  () => useMianStore.$state.pageButton,
+  () => {
+    if (!pageButton.value) return
+    switch (pageButton.value) {
+      // 跳转书本目录
+      case 'bookCatalogue':
+        router.push({ path: `/detail/${pageSession.value.bookId}/${2}` })
+        break
+      //  跳转书详情
+      case 'bookInfo':
+        router.push(`/detail/${pageSession.value.bookId}`)
+        break
+      // TODO 调换书评论
+      case 'bookReview':
+        {
+        }
+        break
+      // TODO 朗读章节
+      case 'playReadBook':
+        {
+        }
+        break
+      // TODO 暂停朗读章节
+      case 'pauseReadBook': {
+      }
+    }
+    pageButton.value = ''
+  }
+)
 // 获取章节内容
 const getBookContent = async () => {
   // TODO 如果没有章节跳转最近阅读的章节，没有则跳转至第一章
-  bookContent(pageSession.value.bookId, pageSession.value.page).then((r) => {
+  bookContent({
+    id: pageSession.value.bookId,
+    page: pageSession.value.page,
+    chapterId: pageSession.value.pageId,
+  }).then((r) => {
     if (r.data.status === 200) {
       pageContent.value = r.data.data
       pageContent.value.content = pageContent.value.content.replaceAll(
         '<br/><br/>',
         '<br/>'
       )
-    }
+    } else router.back()
   })
 }
-onMounted(() => {
-  if (!route.params.id) {
-    // router.push('/')
-  } else {
-    pageSession.value.bookId = route.params.id as string
-    pageSession.value.page = (route.params?.page as string) || '0'
-    getBookContent()
-  }
-})
 
 const toPage = (upOrDown: number) => {
   if (pageSession.value.page == '0' && upOrDown === -1) {
@@ -123,6 +156,17 @@ const toPage = (upOrDown: number) => {
     Message.clear()
   }
 }
+
+onMounted(() => {
+  if (!route.params.id) {
+    // router.push('/')
+  } else {
+    pageSession.value.bookId = route.params.id as string
+    pageSession.value.page = (route.params?.page as string) || '0'
+    pageSession.value.pageId = route.query?.pageId as string
+    getBookContent()
+  }
+})
 </script>
 <style lang="scss" scoped>
 #chapter {
@@ -238,6 +282,33 @@ const toPage = (upOrDown: number) => {
       &:last-child ::after {
         content: none;
       }
+    }
+  }
+  .read-aloud {
+    position: fixed;
+    width: 50px;
+    line-height: 50px;
+    text-align: center;
+    font-size: 14px;
+    bottom: calc(var(--backBottom) * 1px + 60px);
+    right: calc(var(--backRight) * 1px);
+    border-radius: 50%;
+    background: white;
+    // color: inherit;
+    cursor: pointer;
+    // transition: all 0.3s ease;
+    animation-duration: 0.2s;
+    animation-fill-mode: forwards;
+    -webkit-animation-fill-mode: forwards;
+    &:hover {
+      color: rgb(var(--qing-color));
+    }
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  @keyframes show-read-aloud {
+    0% {
     }
   }
 }

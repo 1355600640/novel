@@ -22,7 +22,9 @@
               v-for="(item, index) in headCategory"
               @mouseover="hoverCategory = index + 1"
               @mouseout="hoverCategory = 0"
-              :class="{ categoryHover: hoverCategory == index + 1 }"
+              :class="
+                hoverCategory == index + 1 ? 'categoryHover' : 'categoryLeave'
+              "
             >
               <span @click="$router.push(item.href)" class="a-hover">{{
                 item.name
@@ -32,7 +34,6 @@
                 class="book-category"
                 v-if="item.name == '分类'"
               >
-                <!-- TODO 分类跳转 -->
                 <div>
                   <div
                     @click="$router.push(`/category/${ic.id}`)"
@@ -93,7 +94,7 @@ let hoverCategory = ref(0)
 const headCategory = reactive([
   { name: '首页', href: '/' },
   { name: '分类', href: '/category' },
-  { name: '排行', href: '' },
+  { name: '排行', href: '/rank' },
   { name: '书库', href: '' },
   { name: '完本', href: '' },
 ])
@@ -196,14 +197,14 @@ const showCategory = (fixed: boolean) => {
           }
         }
         &::after {
-          content: none;
+          content: ' ';
           transition: all 0.2s ease;
-          transform: scaleX(0) translateX(50%);
+          // transform: translateX(50%);
           transform-origin: center center;
           position: absolute;
           bottom: -10px;
-          right: 50%;
-          width: 80%;
+          left: 10%;
+          width: 0;
           height: 2px;
           background: rgb(var(--qing-color));
         }
@@ -211,7 +212,16 @@ const showCategory = (fixed: boolean) => {
       .categoryHover {
         &::after {
           content: ' ';
-          transform: scaleX(1) translateX(50%);
+          width: 80%;
+          // transform: translateX(50%);
+        }
+      }
+      .categoryLeave {
+        &::after {
+          content: ' ';
+          right: 10%;
+          left: auto;
+          // transform: translateX(50%);
         }
       }
     }

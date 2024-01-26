@@ -22,7 +22,6 @@
             effect="coverflow"
           >
             <SwiperSlide v-for="i in homeBanner.carousel" :key="(i as any).id">
-              <!-- TODO 书本跳转 -->
               <div class="swiper_item">
                 <div class="swiper_conetent">
                   <div
@@ -38,7 +37,10 @@
                     >
                       {{ (i as any).bookName }}
                     </div>
-                    <div class="text-color-tr text-base text-slate-600">
+                    <div
+                      @click="router.push(`/people/${(i as any).authorId}`)"
+                      class="text-color-tr text-base text-slate-600"
+                    >
                       {{ (i as any).authorName }}
                     </div>
                     <div
@@ -271,6 +273,7 @@
         </a-table>
       </div>
     </div>
+    <!-- TODO 人气作家 -->
     <div></div>
   </div>
 </template>
@@ -373,7 +376,12 @@ const getRecommendAndRank = async (
   const commendP = new Promise((res) => {
     recommend(commend).then((r) => {
       if (r.data.status == 200) {
-        homeBanner.value.recommend[commendName] = r.data.data
+        homeBanner.value.recommend[commendName] = r.data.data.map((r) => {
+          const div = document.createElement('div')
+          div.innerHTML = r.bookDesc
+          r.bookDesc = div.innerText.trim()
+          return r
+        })
         res(true)
       }
     })
@@ -382,7 +390,12 @@ const getRecommendAndRank = async (
   const rankP = new Promise((res) => {
     ranking({ type: rank, num: rankNum }).then((r) => {
       if (r.data.status == 200) {
-        homeBanner.value.rank[bankName] = r.data.data
+        homeBanner.value.rank[bankName] = r.data.data.map((r) => {
+          const div = document.createElement('div')
+          div.innerHTML = r.bookDesc
+          r.bookDesc = div.innerText.trim()
+          return r
+        })
         res(true)
       }
     })
@@ -435,49 +448,53 @@ let scrollRequestStatus = {
 }
 import { getCategoryName } from '../api/Category'
 let category = reactive([] as any[])
+
+const scrollToShow = () => {
+  // 热门推荐懒加载
+  const ob = new IntersectionObserver(
+    () => {
+      scrollRequestStatus.recommend = true
+      getRecommendAndRank('3', '0', 10, 'hotBook', 'clickBook').then(() => {})
+    },
+    {
+      threshold: 0,
+    }
+  )
+  // 精品推荐懒加载
+  ob.observe(hotBook.value?.$el)
+  const ob_2 = new IntersectionObserver(
+    () => {
+      scrollRequestStatus.premiumBook = true
+      getRecommendAndRank('4', '1', 10, 'premiumBook', 'newsBook').then(
+        () => {}
+      )
+    },
+    {
+      threshold: 0,
+    }
+  )
+  ob_2.observe(premiumBook.value?.$el)
+  // 最近更新/完结懒加载
+  const ob_3 = new IntersectionObserver(
+    () => {
+      modulesStatus = bookModulesStatus.value
+      getLastUpdate(bookModulesStatus.value as number)
+    },
+    {
+      threshold: 0,
+    }
+  )
+  if (bookModules.value) ob_3.observe(bookModules.value)
+}
 onMounted(() => {
   getHomeData()
   // 获取所有分类
   getCategoryName().then((r) => {
     category = r.data.data
   })
-  window.addEventListener('scroll', () => {
-    const windowHeight = window.innerHeight
-    const boxDistanceTop = 50
-    // 懒加载推荐列表
-    if (
-      windowHeight - hotBook.value?.$el.getBoundingClientRect().y >=
-        boxDistanceTop &&
-      homeBanner.value.recommend.hotBook.length == 0 &&
-      !scrollRequestStatus.recommend
-    ) {
-      scrollRequestStatus.recommend = true
-      getRecommendAndRank('3', '0', 10, 'hotBook', 'clickBook').then(() => {})
-    }
-    if (
-      windowHeight - premiumBook.value?.$el.getBoundingClientRect().y >=
-        boxDistanceTop &&
-      homeBanner.value.recommend.premiumBook.length == 0 &&
-      !scrollRequestStatus.premiumBook
-    ) {
-      scrollRequestStatus.premiumBook = true
-      getRecommendAndRank('4', '1', 10, 'premiumBook', 'newsBook').then(
-        () => {}
-      )
-    }
-    // 最近更新/完结懒加载
-    if (
-      bookModules.value &&
-      windowHeight - bookModules.value?.getBoundingClientRect().y >=
-        boxDistanceTop &&
-      modulesStatus != bookModulesStatus.value &&
-      homeBanner.value.modelBook.length == 0
-    ) {
-      modulesStatus = bookModulesStatus.value
-      getLastUpdate(bookModulesStatus.value as number)
-    }
-  })
+  scrollToShow()
 })
+
 // 切换最近更新/完结
 const changeLastUpdate = (index: string | number): void => {
   bookModulesStatus.value = index

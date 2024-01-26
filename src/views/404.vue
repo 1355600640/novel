@@ -38,11 +38,6 @@ onMounted(() => {
   const pageHeader = document.querySelector('#pageHeader')
   const footer = document.querySelector('.footer')
 
-  console.log(
-    document.body.clientHeight,
-    pageHeader?.clientHeight,
-    footer?.clientHeight
-  )
   if (pageHeader && footer)
     error.value.style.height =
       document.body.clientHeight -

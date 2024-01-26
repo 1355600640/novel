@@ -80,6 +80,7 @@ const toPage = (href: string, event: Event): void => {
   // display: grid;
   height: 140px;
   gap: 10px;
+
   // grid-template-columns: 1fr 2fr;
   display: flex;
   flex-direction: row;

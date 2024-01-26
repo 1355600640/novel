@@ -3,8 +3,10 @@
     <div class="bookCategory">
       <div class="cursor-pointer a-hover" @click="$router.push('/')">首页</div>
       <icon-right class="dark-text" />
-      <!-- TODO 分类跳转 -->
-      <div class="cursor-pointer a-hover">
+      <div
+        @click="$router.push('/category/' + bookSession.bookInfo?.categoryId)"
+        class="cursor-pointer a-hover"
+      >
         {{ bookSession.bookInfo?.categoryName }}
       </div>
       <icon-right class="dark-text" />
@@ -33,7 +35,11 @@
               {{ bookSession.bookInfo?.categoryName }}
             </div>
             <div
-            @click="$router.push(`/category?status=${bookSession.bookInfo?.bookStatus}`)"
+              @click="
+                $router.push(
+                  `/category?status=${bookSession.bookInfo?.bookStatus}`
+                )
+              "
               :style="[
                 `border-color:${
                   bookSession.bookInfo?.bookStatus == 0 ? '#2687d9' : 'red'
@@ -80,6 +86,11 @@
             <span>最新章节:</span>
             <span
               class="ml-2 a-hover cursor-pointer"
+              @click="
+                $router.push(
+                  `/chapter/${bookSession.bookInfo?.id}?pageId=${bookSession.bookInfo?.lastChapterId}`
+                )
+              "
               :class="{ 'vip-tags': catelogue[catelogue.length]?.isVip }"
               >{{ bookSession.bookInfo?.lastChapterName }}</span
             >
@@ -99,7 +110,10 @@
         </div>
       </div>
       <div class="author-session">
-        <div class="author-img">
+        <div
+          class="author-img cursor-pointer"
+          @click="$router.push(`/people/${bookSession.bookInfo?.authorId}`)"
+        >
           <!-- <a-image src="" width="100%" height="100%" /> -->
           <img
             style="width: 100%; height: 100%"
@@ -107,7 +121,12 @@
             alt=""
           />
         </div>
-        <div class="text-base">{{ bookSession.bookInfo?.authorName }}</div>
+        <div
+          @click="$router.push(`/people/${bookSession.bookInfo?.authorId}`)"
+          class="text-base cursor-pointer"
+        >
+          {{ bookSession.bookInfo?.authorName }}
+        </div>
         <!-- TODO 作者百科 -->
         <div class="flex items-center gap-1 cursor-pointer a-hover">
           <img style="width: 25px" src="../assets/image/4605684.png" alt="" />
@@ -170,7 +189,7 @@
                 :key="item.id"
                 @click="
                   $router.push(
-                    `/chapter/${bookSession.bookInfo?.id}&page=${item.chapterNum}`
+                    `/chapter/${bookSession.bookInfo?.id}/${item.chapterNum}`
                   )
                 "
               >

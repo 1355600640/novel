@@ -2,7 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
 
 const router = createRouter({
-  history: createWebHistory('/'),
+  history: createWebHistory(),
   routes: [
     {
       path: '/home',
@@ -45,25 +45,53 @@ const router = createRouter({
     {
       path: '/chapter/:id?/:page?',
       name: 'chapter',
-      meta: { pageHeader: true, noLogin: true, navigationBar: false },
+      meta: {
+        showButtonCatalogue: true,
+        showButtonInfo: true,
+        showButtonReview: true,
+        showButtonRead: true,
+        pageHeader: true,
+        noLogin: true,
+        navigationBar: false,
+      },
       component: () => import('../views/Chapter.vue'),
     },
     {
       path: '/category/:index?',
       name: 'category',
-      meta: { pageHeader: true, noLogin: true, showCategory: true },
+      meta: {
+        keepAlive: true,
+        pageHeader: true,
+        noLogin: true,
+        showCategory: true,
+      },
       component: () => import('../views/Category.vue'),
     },
     {
       path: '/people/:id?',
       name: 'people',
       meta: { pageHeader: true, noLogin: true, showCategory: true },
-      component: () => import('../views/people.vue'),
+      component: () => import('../views/Author.vue'),
+    },
+    {
+      path: '/rank',
+      name: 'rank',
+      meta: {
+        keepAlive: true,
+        pageHeader: true,
+        noLogin: true,
+        showCategory: true,
+      },
+      component: () => import('../views/Rank.vue'),
     },
     {
       path: '/:pathMatch(.*)*',
       name: 'error',
-      meta: { pageHeader: true, noLogin: true, showCategory: true },
+      meta: {
+        pageHeader: true,
+        noLogin: true,
+        showCategory: true,
+      },
       component: () => import('../views/404.vue'),
     },
   ],

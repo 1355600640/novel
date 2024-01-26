@@ -1,17 +1,19 @@
 
 #app{
   --qing-color:40 102 246/96%;
+  --qing-color-hover:0 50 255 / 96%;
 }
+
 .main-color{
   color: rgb(var(--qing-color));
 }
 i{
   font-style: normal;
 }
-*{
-  padding: 0;
-  margin: 0;
-}
+// *{
+//   padding: 0;
+//   margin: 0;
+// }
 a{
   text-decoration: none;
 }
@@ -24,6 +26,7 @@ a{
     color: rgb(var(--qing-color));
   }
 }
+
 .center-view{
   width: 1250px;
   margin: 0 auto;
@@ -47,3 +50,40 @@ a{
   color: #c6c4c4;
 }
 
+.text-overflow-n{
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: normal;
+  -webkit-line-clamp: var(--limit);
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+}
+
+.gradation-1{
+  background: linear-gradient(#ffe5e580, #ffffff);
+  color: #e40303;
+}
+.gradation-2{
+  background: linear-gradient(#ddf5ffb8, #ffffff);
+  color: #098fc6;
+}
+.gradation-3{
+  background: linear-gradient(#ffe5e580, #ffffff);
+  color: #e40303;
+}
+.gradation-3{
+  background: linear-gradient(#f8f4ff, #ffffff);
+  color: #8461cc;
+}
+.gradation-4{
+  background: linear-gradient(#ddf5ffb8, #ffffff);
+  color: #027eb1;
+}
+.gradation-5{
+  background: linear-gradient(rgb(255 236 227 / 65%), #ffffff);
+  color: #e6733c;
+}
+.gradation-6{
+  background: linear-gradient(#fff4e1b8, #ffffff);
+  color: #eda600;
+}
