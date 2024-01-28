@@ -175,7 +175,7 @@
           </div>
         </a-tab-pane>
         <a-tab-pane key="2" :title="`目录${catelogue.length}`">
-          <div class="book-catalogue">
+          <div class="book-catalogue mb-10">
             <div>
               <span>正文</span>
               <span class="ml-2">共{{ catelogue.length }}章</span>

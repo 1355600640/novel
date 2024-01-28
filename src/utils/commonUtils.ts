@@ -93,3 +93,49 @@ export function dateToNum(date: string): number {
   let day = Math.ceil((nowDate - lastDate) / 60 / 60 / 60 / 24)
   return day
 }
+
+/**
+ * 移出文字最前后的空格
+ * @param text 移出空格的文字
+ */
+export function removeOfFrontSpace(text: string): string {
+  const dom = document.createElement('div')
+  dom.innerHTML = text
+  text = dom.innerText.trim()
+  return text
+}
+
+export function markerKeys(
+  content: string,
+  keyword: string,
+  el: string,
+  classNameList: string[]
+) {
+  // 标记包含最长文字
+  const patter = /([\u4e00-\u9fa50-9a-zA-Z]+)/g
+  let keyWords = ''
+  let r
+  toTop: while ((r = patter.exec(keyword))) {
+    let keys = r[0]
+    for (let i = 0; i < keys.length; i++) {
+      let key = '',
+        longKey = ''
+      for (let j = i; j < keys.length; j++) {
+        key += keys[j]
+        if (content.includes(key)) {
+          longKey = key
+        }
+      }
+      if (longKey) {
+        keyWords = longKey
+        break toTop
+      }
+    }
+  }
+  // 将标记文字替换
+  if (!keyWords) return content
+  let className = classNameList.join(' ')
+  let reduceText = `<${el} class="${className}">${keyWords}</${el}>`
+  content = content.replaceAll(keyWords, reduceText)
+  return content
+}

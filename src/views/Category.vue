@@ -216,7 +216,7 @@ watch(route, () => {
 })
 onMounted(() => {
   if (route.query.serialize) {
-    pageData.value.status = 1
+    pageData.value.status = parseInt(route.query.serialize as string) + 1
   }
   const getValue = ['status', 'isCharge', 'words', 'timeSort']
   getCategory().then(() => {

@@ -1,7 +1,7 @@
 <template>
   <div id="home">
     <div class="banner">
-      <div class="banner_left">
+      <div class="banner_left" ref="bannerEl">
         <div class="swiper-box-left">
           <Swiper
             ref="swiper_left"
@@ -104,11 +104,16 @@
       <!-- 首页公告 -->
       <div class="banner_right">
         <div class="banner_announcement_title flex items-center">
-          <i class="iconfont icon-laba1 text-2xl" style="color: #d32441"></i>
-          <span style="color: #d11f43" class="ml-2">公告</span>
+          <div>
+            <i class="iconfont icon-laba1 text-2xl" style="color: #d32441"></i>
+            <span style="color: #d11f43" class="ml-2">公告</span>
+          </div>
+          <div class="cursor-pointer hover:text-red-600 text-sm text-gray-500">
+            更多<icon-right class="ml-px" />
+          </div>
         </div>
         <div class="banner_announcement_item flex flex-col gap-5 mt-5">
-          <!-- TODO 公告跳转 -->
+          <!-- TODO 公告跳转 公告页 -->
           <div class="" v-for="item in homeBanner.announcement" :key="item.id">
             {{ item.title }}
           </div>
@@ -144,7 +149,12 @@
         <a-tab-pane :key="1" title="最近完结"> </a-tab-pane>
       </a-tabs>
       <div class="category-book">
-        <div :class="{ 'tag-hover': selectCategory == 0 }">全部</div>
+        <div
+          @click="toggleModulesCategory(0)"
+          :class="{ 'tag-hover': selectCategory == 0 }"
+        >
+          全部
+        </div>
         <div
           :class="{ 'tag-hover': selectCategory == index + 1 }"
           @click="toggleModulesCategory(index + 1)"
@@ -153,139 +163,157 @@
         >
           {{ item.name }}
         </div>
+        <div @click="$router.push(`/category?serialize=${selectCategory}`)">
+          更多
+        </div>
       </div>
-      <div class="completed mt-5">
-        <a-table
-          class="lastUpdate"
-          :bordered="false"
-          :columns="bookModulesColumns"
-          :data="homeBanner.modelBook"
-          :stripe="true"
-          :hoverable="false"
-          :pagination="false"
-        >
-          <template #columns>
-            <a-table-column
-              :width="120"
-              :tooltip="true"
-              :ellipsis="true"
-              title="类别"
-              data-index="categoryName"
-            >
-              <template #cell="{ record }">
-                <span class="tableCategory">{{ record.categoryName }}</span>
-              </template>
-            </a-table-column>
-            <a-table-column
-              :width="325"
-              :tooltip="true"
-              :ellipsis="true"
-              title="书名"
-              data-index="bookName"
-            >
-              <template #cell="{ record }">
-                <span
-                  @click="$router.push(`/detail/${record.id}`)"
-                  class="a-hover cursor-pointer"
-                >
-                  {{ record.bookName }}
-                </span>
-              </template>
-            </a-table-column>
-            <a-table-column
-              :width="225"
-              :tooltip="true"
-              :ellipsis="true"
-              title="章节名称"
-              data-index="lastChapterName"
-            >
-              <template #cell="{ record }">
-                <span
-                  @click="$router.push(`/chapter/${record.id}/${record.num}`)"
-                  class="a-hover cursor-pointer"
-                >
-                  {{ numberToCapital(record.lastChapterName) }}
-                </span>
-              </template>
-            </a-table-column>
-            <a-table-column
-              :tooltip="true"
-              :ellipsis="true"
-              title="字数"
-              data-index="wordCount"
-            >
-              <template #cell="{ record }">
-                <span
-                  >{{
-                    record.wordCount >= 10000
-                      ? parseInt(record.wordCount / 10000 + '') + '万'
-                      : record.wordCount
-                  }}字</span
-                >
-              </template>
-            </a-table-column>
-            <a-table-column
-              :width="100"
-              :tooltip="true"
-              :ellipsis="true"
-              title="作者"
-              data-index="authorName"
-            >
-              <template #cell="{ record }">
-                <span class="a-hover cursor-pointer">
-                  {{ record.authorName }}字
-                </span>
-              </template>
-            </a-table-column>
-            <a-table-column
-              :tooltip="true"
-              :ellipsis="true"
-              title="更新时间"
-              data-index="lastChapterUpdateTime"
-            ></a-table-column>
-          </template>
-          <template #empty>
-            <div v-show="bookModulesStatus == 1" class="no-last-update">
-              <div class="icon-book">
-                <i
-                  class="iconfont icon-bishuamoji3 animate__slideInDown animate__animated"
-                ></i>
-                <i
-                  class="iconfont icon-shufabichu39 animate__slideInRight animate__animated"
-                ></i>
-                <i
-                  class="iconfont icon-bishuamoji3 animate__animated animate__slideInDown"
-                ></i>
-                <div>
+      <a-spin style="min-height: 100px" :loading="categoryLoading">
+        <div class="completed mt-5">
+          <a-table
+            class="lastUpdate"
+            :bordered="false"
+            :columns="bookModulesColumns"
+            :data="homeBanner.modelBook"
+            :stripe="true"
+            :hoverable="false"
+            :pagination="false"
+          >
+            <template #columns>
+              <a-table-column
+                :width="120"
+                :tooltip="true"
+                :ellipsis="true"
+                title="类别"
+                data-index="categoryName"
+              >
+                <template #cell="{ record }">
+                  <span class="tableCategory">{{ record.categoryName }}</span>
+                </template>
+              </a-table-column>
+              <a-table-column
+                :width="325"
+                :tooltip="true"
+                :ellipsis="true"
+                title="书名"
+                data-index="bookName"
+              >
+                <template #cell="{ record }">
+                  <span
+                    @click="$router.push(`/detail/${record.id}`)"
+                    class="a-hover cursor-pointer"
+                  >
+                    {{ record.bookName }}
+                  </span>
+                </template>
+              </a-table-column>
+              <a-table-column
+                :width="225"
+                :tooltip="true"
+                :ellipsis="true"
+                title="章节名称"
+                data-index="lastChapterName"
+              >
+                <template #cell="{ record }">
+                  <span
+                    @click="$router.push(`/chapter/${record.id}/${record.num}`)"
+                    class="a-hover cursor-pointer"
+                  >
+                    {{ numberToCapital(record.lastChapterName) }}
+                  </span>
+                </template>
+              </a-table-column>
+              <a-table-column
+                :tooltip="true"
+                :ellipsis="true"
+                title="字数"
+                data-index="wordCount"
+              >
+                <template #cell="{ record }">
+                  <span
+                    >{{
+                      record.wordCount >= 10000
+                        ? parseInt(record.wordCount / 10000 + '') + '万'
+                        : record.wordCount
+                    }}字</span
+                  >
+                </template>
+              </a-table-column>
+              <a-table-column
+                :width="100"
+                :tooltip="true"
+                :ellipsis="true"
+                title="作者"
+                data-index="authorName"
+              >
+                <template #cell="{ record }">
+                  <span class="a-hover cursor-pointer">
+                    {{ record.authorName }}字
+                  </span>
+                </template>
+              </a-table-column>
+              <a-table-column
+                :tooltip="true"
+                :ellipsis="true"
+                title="更新时间"
+                data-index="lastChapterUpdateTime"
+              ></a-table-column>
+            </template>
+            <template #empty>
+              <div v-show="bookModulesStatus == 1" class="no-last-update">
+                <div class="icon-book">
                   <i
-                    class="iconfont icon-shufabichu41 animate__slideInRight animate__animated"
+                    class="iconfont icon-bishuamoji3 animate__slideInDown animate__animated"
                   ></i>
+                  <i
+                    class="iconfont icon-shufabichu39 animate__slideInRight animate__animated"
+                  ></i>
+                  <i
+                    class="iconfont icon-bishuamoji3 animate__animated animate__slideInDown"
+                  ></i>
+                  <div>
+                    <i
+                      class="iconfont icon-shufabichu41 animate__slideInRight animate__animated"
+                    ></i>
+                  </div>
+                  <i class="iconfont icon-shufabichu39"></i>
+                  <i
+                    class="iconfont icon-bishuamoji37 animate__animated animate__fadeIn"
+                  ></i>
+                  <i class="iconfont icon-tushuguan"></i>
                 </div>
-                <i class="iconfont icon-shufabichu39"></i>
-                <i
-                  class="iconfont icon-bishuamoji37 animate__animated animate__fadeIn"
-                ></i>
-                <i class="iconfont icon-tushuguan"></i>
+                <div class="bright-text">暂无书籍~</div>
               </div>
-              <div class="bright-text">暂无书籍~</div>
-            </div>
-          </template>
-        </a-table>
-      </div>
+            </template>
+          </a-table>
+        </div>
+      </a-spin>
     </div>
     <!-- TODO 人气作家 -->
-    <div></div>
+    <div class="hot-author pt-12" ref="hotAuthorEl">
+      <div class="title font-serif text-2xl font-bold">人气作家</div>
+      <div class="author-cards">
+        <a-spin
+          v-for="item in hotAuthors"
+          :key="item.id"
+          :loading="hotAuthors?.length == 0"
+        >
+          <AuthorCard :author="item" />
+        </a-spin>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
 import bookRank from '../components/BookRank.vue'
 import { recommend, announcement, ranking, lastUpdated } from '../api/Home'
-import { Ref, onMounted, ref, reactive } from 'vue'
+import { Ref, onMounted, ref, reactive, nextTick, watch } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import typeSwiper from 'swiper'
 import { Autoplay, Navigation, EffectCoverflow } from 'swiper/modules'
 import imgLoading from '../components/ImgLoading.vue'
 import { useRouter } from 'vue-router'
+import { getHotAuthor, hotAuthor } from '../api/Author'
+import AuthorCard from '../components/author/AuthorCard.vue'
 const router = useRouter()
 const modules = [Autoplay, Navigation, EffectCoverflow]
 type banner = {
@@ -343,19 +371,26 @@ let bookModulesColumns = ref([
 ])
 import { stringToDate, numberToCapital } from '../utils/commonUtils'
 const getLastUpdate = async (mode: Number, type?: String) => {
-  await lastUpdated({ mode, type }).then((r) => {
-    if (r.data.status == 200) {
-      homeBanner.value.modelBook = r.data.data.map(
-        (r: { lastChapterUpdateTime: string | number | Date }) => {
-          r.lastChapterUpdateTime = stringToDate(
-            r.lastChapterUpdateTime as string,
-            'all'
-          )
-          return r
-        }
-      )
+  categoryLoading.value = true
+  await lastUpdated({ mode, type: type != '0  ' ? type : '' }).then(
+    (r) => {
+      if (r.data.status == 200) {
+        homeBanner.value.modelBook = r.data.data.map(
+          (r: { lastChapterUpdateTime: string | number | Date }) => {
+            r.lastChapterUpdateTime = stringToDate(
+              r.lastChapterUpdateTime as string,
+              'all'
+            )
+            return r
+          }
+        )
+      }
+      categoryLoading.value = false
+    },
+    () => {
+      categoryLoading.value = false
     }
-  })
+  )
 }
 
 /**
@@ -376,12 +411,14 @@ const getRecommendAndRank = async (
   const commendP = new Promise((res) => {
     recommend(commend).then((r) => {
       if (r.data.status == 200) {
-        homeBanner.value.recommend[commendName] = r.data.data.map((r) => {
-          const div = document.createElement('div')
-          div.innerHTML = r.bookDesc
-          r.bookDesc = div.innerText.trim()
-          return r
-        })
+        homeBanner.value.recommend[commendName] = r.data.data.map(
+          (r: { bookDesc: string }) => {
+            const div = document.createElement('div')
+            div.innerHTML = r.bookDesc
+            r.bookDesc = div.innerText.trim()
+            return r
+          }
+        )
         res(true)
       }
     })
@@ -390,12 +427,14 @@ const getRecommendAndRank = async (
   const rankP = new Promise((res) => {
     ranking({ type: rank, num: rankNum }).then((r) => {
       if (r.data.status == 200) {
-        homeBanner.value.rank[bankName] = r.data.data.map((r) => {
-          const div = document.createElement('div')
-          div.innerHTML = r.bookDesc
-          r.bookDesc = div.innerText.trim()
-          return r
-        })
+        homeBanner.value.rank[bankName] = r.data.data.map(
+          (r: { bookDesc: string }) => {
+            const div = document.createElement('div')
+            div.innerHTML = r.bookDesc
+            r.bookDesc = div.innerText.trim()
+            return r
+          }
+        )
         res(true)
       }
     })
@@ -414,19 +453,26 @@ const getRecommendAndRank = async (
 }
 
 // 获取首页顶部信息
-const getHomeData = () => {
+const getHomeData = async () => {
   // 获取轮播
-  recommend().then((r) => {
-    if (r.data.status == 200) homeBanner.value.carousel = r.data.data
+  const allPromise = new Promise((res) => {
+    let count = 0
+    recommend().then((r) => {
+      if (r.data.status == 200) homeBanner.value.carousel = r.data.data
+      if (++count == 3) res('成功')
+    })
+    // 获取本周强推
+    recommend('2').then((r) => {
+      if (r.data.status == 200) homeBanner.value.weekRecommend = r.data.data
+      if (++count == 3) res('成功')
+    })
+    // 获取系统公告
+    announcement().then((r) => {
+      if (r.data.status == 200) homeBanner.value.announcement = r.data.data
+      if (++count == 3) res('成功')
+    })
   })
-  // 获取本周强推
-  recommend('2').then((r) => {
-    if (r.data.status == 200) homeBanner.value.weekRecommend = r.data.data
-  })
-  // 获取系统公告
-  announcement().then((r) => {
-    if (r.data.status == 200) homeBanner.value.announcement = r.data.data
-  })
+  return allPromise
 }
 // 等swiper加载之后，装载到swiper_left丄1�7
 const onSwiper = (swiper: typeSwiper) => {
@@ -441,71 +487,92 @@ const hotBook = ref<InstanceType<typeof bookRank>>()
 const premiumBook = ref<InstanceType<typeof bookRank>>()
 const bookModules = ref<InstanceType<typeof Element>>()
 let bookModulesStatus: Ref<string | Number> = ref(0)
-let modulesStatus: String | Number = -1
 let scrollRequestStatus = {
   recommend: false,
   premiumBook: false,
 }
 import { getCategoryName } from '../api/Category'
 let category = reactive([] as any[])
-
+const hotAuthorEl = ref<HTMLElement>()
+// 懒加载
 const scrollToShow = () => {
   // 热门推荐懒加载
-  const ob = new IntersectionObserver(
-    () => {
+  const ob = new IntersectionObserver((entries: any[]) => {
+    if (entries[0].isIntersecting) {
       scrollRequestStatus.recommend = true
       getRecommendAndRank('3', '0', 10, 'hotBook', 'clickBook').then(() => {})
-    },
-    {
-      threshold: 0,
+      ob.disconnect()
     }
-  )
+  })
   // 精品推荐懒加载
   ob.observe(hotBook.value?.$el)
-  const ob_2 = new IntersectionObserver(
-    () => {
+  const ob_2 = new IntersectionObserver((entries: any[]) => {
+    if (entries[0].isIntersecting) {
       scrollRequestStatus.premiumBook = true
       getRecommendAndRank('4', '1', 10, 'premiumBook', 'newsBook').then(
         () => {}
       )
-    },
-    {
-      threshold: 0,
+      ob_2.disconnect()
     }
-  )
+  })
   ob_2.observe(premiumBook.value?.$el)
   // 最近更新/完结懒加载
-  const ob_3 = new IntersectionObserver(
-    () => {
-      modulesStatus = bookModulesStatus.value
+  const ob_3 = new IntersectionObserver((entries: any[]) => {
+    if (entries[0].isIntersecting) {
+      // modulesStatus = bookModulesStatus.value
       getLastUpdate(bookModulesStatus.value as number)
-    },
-    {
-      threshold: 0,
+      if (bookModules.value) ob_3.disconnect()
     }
-  )
-  if (bookModules.value) ob_3.observe(bookModules.value)
-}
-onMounted(() => {
-  getHomeData()
-  // 获取所有分类
-  getCategoryName().then((r) => {
-    category = r.data.data
   })
-  scrollToShow()
-})
+  if (bookModules.value) ob_3.observe(bookModules.value)
+  const ob_4 = new IntersectionObserver((entries: any[]) => {
+    if (entries[0].isIntersecting) {
+      getHotAuthors()
+      if (hotAuthorEl.value) ob_4.disconnect()
+    }
+  })
+  if (hotAuthorEl.value) ob_4.observe(hotAuthorEl.value)
+}
 
+let categoryLoading = ref(false)
 // 切换最近更新/完结
 const changeLastUpdate = (index: string | number): void => {
   bookModulesStatus.value = index
-  getLastUpdate(index as number)
+  getLastUpdate(bookModulesStatus.value as number, selectCategory.value + '')
 }
 
 const selectCategory: Ref<number> = ref(0)
 const toggleModulesCategory = (index: number) => {
   selectCategory.value = index
-  getLastUpdate(bookModulesStatus.value as number, index + '')
+  if (index > 0) getLastUpdate(bookModulesStatus.value as number, index + '')
+  else getLastUpdate(index)
 }
+
+import { removeOfFrontSpace } from '../utils/commonUtils'
+let hotAuthors = ref<hotAuthor[]>()
+/**
+ * 获取热门作家
+ */
+const getHotAuthors = () => {
+  getHotAuthor(1, 3).then((r) => {
+    if (r.data.status == 200) {
+      hotAuthors.value = r.data.data.map((r) => {
+        r.hotBookIntroduce = removeOfFrontSpace(r.hotBookIntroduce)
+        return r
+      })
+    }
+  })
+}
+
+onMounted(() => {
+  getHomeData().then(() => {
+    scrollToShow()
+  })
+  // 获取所有分类
+  getCategoryName().then((r) => {
+    category = r.data.data
+  })
+})
 </script>
 <style lang="scss" scoped>
 #home {
@@ -516,6 +583,7 @@ const toggleModulesCategory = (index: number) => {
   padding: 20px;
   border-radius: 6px;
   --color-fill-1: #f6f8fa;
+  min-width: 1250px;
 
   .banner {
     display: flex;
@@ -528,8 +596,6 @@ const toggleModulesCategory = (index: number) => {
       display: flex;
       $swiper_box_height: 320px;
       .swiper-box-left {
-        // $swiper_left__img_width: 240px;
-        // width: $swiper_left__img_width;
         position: relative;
         width: 240px;
         overflow: hidden;
@@ -562,7 +628,7 @@ const toggleModulesCategory = (index: number) => {
             cursor: pointer;
             padding-top: 40px;
             .swiper_conetent {
-              background: linear-gradient(180deg, #000000, #fff 58%);
+              background: linear-gradient(180deg, #e3e9ed, #fff 58%);
               border: 1px solid white;
               border-radius: 12px;
               .swiper_image {
@@ -608,7 +674,6 @@ const toggleModulesCategory = (index: number) => {
       }
       .swiper-box-right {
         $swiper_right__img_width: 6 0px;
-        // width: $swiper_right__img_width;
         height: $swiper_box_height;
         margin-left: 15px;
         overflow: hidden;
@@ -647,8 +712,6 @@ const toggleModulesCategory = (index: number) => {
     .banner_center {
       width: 620px;
       .banner_title {
-        // text-align: center;
-        // font-size: 18px;
         font-weight: 700;
       }
 
@@ -684,12 +747,13 @@ const toggleModulesCategory = (index: number) => {
     }
     .banner_right {
       overflow: hidden;
-      // min-width: 200px;
       .banner_announcement_title {
         font-size: 18px;
         font-weight: 700;
         border-bottom: 1px solid rgb(227 227 227 / 77%);
         padding: 5px 0;
+        display: flex;
+        justify-content: space-between;
       }
       .banner_announcement_item div {
         overflow: hidden;
@@ -704,11 +768,9 @@ const toggleModulesCategory = (index: number) => {
     }
   }
   .book-modules {
-    .completed {
-      height: calc(40.8 * 15px + 40px);
-    }
+    min-height: 100px;
+
     .modules-tabs {
-      // width: 0%;
       .lastUpdate {
         min-height: 500px;
         font-family: Inter, '-apple-system', BlinkMacSystemFont, 'PingFang SC',
@@ -857,6 +919,16 @@ const toggleModulesCategory = (index: number) => {
       .tag-hover {
         outline: 1px solid rgb(var(--qing-color));
         background: white;
+      }
+    }
+  }
+  .hot-author {
+    .author-cards {
+      margin-top: 30px;
+      display: flex;
+      gap: 20px;
+      > div {
+        flex: 1;
       }
     }
   }

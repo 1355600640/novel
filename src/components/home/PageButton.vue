@@ -47,7 +47,7 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { mainStore } from '../store'
+import { mainStore } from '../../store'
 import { storeToRefs } from 'pinia'
 import { ref } from 'vue'
 const useMianStore = mainStore()

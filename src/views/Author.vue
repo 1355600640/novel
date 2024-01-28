@@ -4,12 +4,13 @@
     <!-- 作者信息 -->
     <div class="people-session">
       <div class="author-img">
-        <img
-          v-if="author.userId == 0"
-          src="../assets/image/default-avatar.jpg"
-          alt=""
-        />
-        <a-image v-else />
+        <div class="author-img-el">
+          <ImgLoading
+            :url="'/api/images' + author.authorImage"
+            :is-have="true"
+            :have-tr="true"
+          />
+        </div>
       </div>
       <div class="author-about">
         <div class="autor-penName">{{ author.penName }}</div>
@@ -157,14 +158,16 @@ onMounted(() => {
       width: 90px;
       overflow: hidden;
       display: flex;
-      align-items: center;
-      > img {
+      // align-items: center;
+      > .author-img-el {
         width: 90px;
         height: 90px;
         border-radius: 50%;
+        overflow: hidden;
       }
     }
     .author-about {
+      min-width: 460px;
       display: flex;
       flex-direction: column;
       gap: 20px;

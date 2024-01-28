@@ -457,7 +457,7 @@ onMounted(() => {
         padding: 0 50px;
 
         --limit: 1;
-        margin-bottom: 30px;
+        margin-bottom: 10px;
         .category-list {
           padding-bottom: 20px;
           gap: 30px;

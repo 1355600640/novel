@@ -33,7 +33,9 @@
 <script lang="ts" setup>
 import { onMounted, ref, Ref } from 'vue'
 const error: Ref<HTMLElement> = ref(null as any)
-const { session } = defineProps(['session'])
+const { session } = defineProps({
+  session: String,
+})
 onMounted(() => {
   const pageHeader = document.querySelector('#pageHeader')
   const footer = document.querySelector('.footer')

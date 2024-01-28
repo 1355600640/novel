@@ -26,9 +26,11 @@
                 hoverCategory == index + 1 ? 'categoryHover' : 'categoryLeave'
               "
             >
-              <span @click="$router.push(item.href)" class="a-hover">{{
-                item.name
-              }}</span>
+              <span
+                @click="item.href ? $router.push(item.href) : ''"
+                class="a-hover"
+                >{{ item.name }}</span
+              >
               <div
                 style="z-index: 999"
                 class="book-category"
@@ -53,6 +55,8 @@
             placeholder="书名、作者、关键词"
             v-model="search"
             search-button
+            @press-enter="toSearch"
+            @search="toSearch"
           />
         </div>
 
@@ -73,12 +77,12 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, Ref, watch } from 'vue'
+import { ref, reactive, Ref, watch, nextTick } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { mainStore } from '../store'
+import { mainStore } from '../../store'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
-import { getCategoryName } from '../api/Category'
+import { getCategoryName } from '../../api/Category'
 
 const useMianStore = mainStore()
 const { user } = storeToRefs(useMianStore)
@@ -93,10 +97,10 @@ watch(route, () => {
 let hoverCategory = ref(0)
 const headCategory = reactive([
   { name: '首页', href: '/' },
-  { name: '分类', href: '/category' },
+  { name: '分类', href: '' },
   { name: '排行', href: '/rank' },
-  { name: '书库', href: '' },
-  { name: '完本', href: '' },
+  { name: '书库', href: '/category' },
+  { name: '完本', href: '/category?serialize=1' },
 ])
 let category: Ref<any[]> = ref([])
 let search = ref('')
@@ -107,7 +111,15 @@ const getAllCategory = () => {
     category.value = r.data.data
   })
 }
+
+const toSearch = () => {
+  if (!search.value.trim()) return
+  router.push(`/search?keyword=${search.value}`).then(() => {
+    router.go(0)
+  })
+}
 onMounted(() => {
+  if (route.query.keyword) search.value = route.query.keyword as string
   if (localStorage.getItem('novel_token')) useMianStore.getUser()
   getAllCategory()
   if (route.name !== 'home' && route.meta.showCategory) {

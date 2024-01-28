@@ -1,11 +1,11 @@
 ﻿<template>
   <a-image
-    :src="(imgUrl || '') + url"
+    :src="(isHave ? '' : imgUrl) + url"
     show-loader
     width="100%"
     height="100%"
     :preview="false"
-    :class="{ isShadow: isShadow }"
+    :class="{ isShadow: isShadow, noTr: haveTr }"
   >
     <template #error>
       <img
@@ -31,11 +31,13 @@ const { imgUrl } = storeToRefs(useMainStore)
 type props = {
   url: string
   isShadow?: boolean
+  isHave?: boolean
+  haveTr?: boolean
 }
 const { url, isShadow } = defineProps<props>()
 </script>
 <style lang="scss" scoped>
-.arco-image:hover :deep img {
+.arco-image:not(.noTr):hover :deep img {
   transform: scale(1.2);
 }
 .arco-image :deep img {
@@ -50,7 +52,7 @@ const { url, isShadow } = defineProps<props>()
   }
 }
 .arco-image-loading {
-  width: 100% !important;
+  // width: 100% !important;
   height: 100%;
 }
 .arco-image:not(

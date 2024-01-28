@@ -17,10 +17,10 @@
   </div>
 </template>
 <script lang="ts" setup>
-import PageHeader from './components/PageHeader.vue'
-import NavigationBar from './components/NavigationBar.vue'
-import PageFooter from './components/PageFooter.vue'
-import PageButton from './components/PageButton.vue'
+import PageHeader from './components/home/PageHeader.vue'
+import NavigationBar from './components/home/NavigationBar.vue'
+import PageFooter from './components/home/PageFooter.vue'
+import PageButton from './components/home/PageButton.vue'
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
 const route = useRoute()

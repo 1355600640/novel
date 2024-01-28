@@ -1,6 +1,6 @@
 ﻿<template>
   <div class="rank-book-info">
-    <div class="book-rank">
+    <div class="book-rank" v-if="!notShowNumber">
       <div v-if="index >= 3" class="font-sans">
         {{ (index < 9 ? '0' : '') + index }}
       </div>
@@ -16,19 +16,24 @@
 
       <div class="book-info-session">
         <div
-          class="book-title text-lg cursor-pointer hover:text-red-600"
+          v-html="rankData.bookName"
+          :class="{ 'hover:text-red-600': !noHover }"
+          class="book-title text-lg cursor-pointer"
           @click="$router.push(`/detail/${rankData.id}`)"
+        ></div>
+        <div
+          :class="{ noHover: noHover }"
+          class="book-tag text-xs text-slate-400"
         >
-          {{ rankData.bookName }}
-        </div>
-        <div class="book-tag text-xs text-slate-400">
-          <div @click="$router.push(`/people/${rankData.authorId}`)">
-            {{ rankData.authorName }}
-          </div>
+          <div
+            v-html="rankData.authorName"
+            @click="$router.push(`/people/${rankData.authorId}`)"
+          ></div>
           <span class="bg-slate-400"></span>
-          <div @click="$router.push(`/category/${rankData.categoryId}`)">
-            {{ rankData.categoryName }}
-          </div>
+          <div
+            v-html="rankData.categoryName"
+            @click="$router.push(`/category/${rankData.categoryId}`)"
+          ></div>
           <span class="bg-slate-400"></span>
           <div
             @click="$router.push(`/category?serialize=${rankData.bookStatus}`)"
@@ -38,24 +43,28 @@
         </div>
         <div
           @click="$router.push(`/detail/${rankData.id}`)"
-          class="book-desc cursor-pointer hover:text-red-600"
+          :class="{ 'hover:text-red-600': !noHover }"
+          class="book-desc cursor-pointer"
           v-html="rankData.bookDesc"
+          :title="removeOfFrontSpace(rankData.bookDesc)"
         ></div>
         <div class="book-chapter text-xs text-slate-400">
           最新章节：<span
+            :title="rankData.lastChapterName"
             @click="
               $router.push(
                 `/chapter/${rankData.id}?pageId=${rankData.lastChapterId}`
               )
             "
-            class="cursor-pointer hover:text-red-600"
+            :class="{ 'hover:text-red-600': !noHover }"
+            class="cursor-pointer"
             >{{ rankData.lastChapterName }}</span
           >
         </div>
       </div>
     </div>
-    <div class="book-menu">
-      <div class="book-browse cursor-default">
+    <div class="book-menu ml-6">
+      <div class="book-browse cursor-default" v-if="!notShowSetBookshelf">
         <span class="font-bold">{{ rankData.subscription }}</span>
         <span class="text-xs text-slate-400">订阅</span>
       </div>
@@ -63,12 +72,14 @@
         class="text-2xl"
         style="
           background: linear-gradient(324deg, #e60000, #ff6114);
-          padding: 17px 32px;
+          padding: 17px 25px;
         "
-        @click="$router.push(`/detail/${rankData.id}`)"
+        @click="
+          $router.push(`/${isRead ? 'chapter' : 'detail'}/${rankData.id}`)
+        "
         type="primary"
         shape="round"
-        >书籍详情</a-button
+        >{{ isRead ? '立即阅读' : '书籍详情' }}</a-button
       >
       <!-- TODO　加入书架 -->
       <div class="cursor-pointer text-xs text-slate-500">加入书架</div>
@@ -77,12 +88,18 @@
 </template>
 <script lang="ts" setup>
 import ImgLoading from '../ImgLoading.vue'
+import { removeOfFrontSpace } from '../../utils/commonUtils'
 
 type Props = {
   rankData: any
   index: number
+  notShowNumber?: boolean
+  notShowSetBookshelf?: boolean
+  isRead?: boolean
+  noHover?: boolean
 }
-const { rankData, index } = defineProps<Props>()
+const { rankData, index, notShowNumber, notShowSetBookshelf, isRead, noHover } =
+  defineProps<Props>()
 function getIcon(index: number) {
   return new URL(`../../assets/image/rank${index}.png`, import.meta.url).href
 }
@@ -141,8 +158,10 @@ function getIcon(index: number) {
       .book-tag {
         display: flex;
         align-items: center;
-        div {
+        > div {
           cursor: pointer;
+        }
+        &:not(.noHover) div {
           &:hover {
             color: #dc2626;
           }

@@ -2,10 +2,11 @@
 
 const urlPrefix = '/author'
 
-export type authorInfo = {
+export interface authorInfo {
   id: number
   userId: number
   inviteCode: string
+  authorImage: string
   penName: string
   telPhone: string
   chatAccount: string
@@ -41,4 +42,25 @@ export async function authorOfBook(
   total: string
 }> {
   return await get(urlPrefix + '/getAuthorBook', { id, page, num })
+}
+
+export interface hotAuthor extends authorInfo {
+  hotBookName: string
+  hotBookId: number
+  hotBookIntroduce: string
+  newBookName: string
+  newBookId: number
+  newBookIntroduce: string
+}
+/**
+ * 获取热门作者
+ * @param pageSzie 页码
+ * @param limit 数据条数
+ * @returns 热门作者
+ */
+export async function getHotAuthor(
+  pageSzie: number,
+  limit: number
+): response<hotAuthor[]> {
+  return await get(urlPrefix + '/getHot', { pageSzie, limit })
 }

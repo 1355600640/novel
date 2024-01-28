@@ -22,10 +22,10 @@ const urlList = reactive([
     name: '首页',
     url: '/',
   },
-  { name: '分类', url: '/category' },
-  { name: '排行榜', url: '/rank' },
-  { name: '充值', url: '' },
-  { name: '作家专区', url: '' },
+  { name: '全部作品', url: '/category' },
+  { name: '排行', url: '/rank' },
+  // { name: '作者', url: '/category' },
+  { name: '完本', url: '/category?serialize=1' },
 ])
 // const urls = reactive([])
 let index = ref(0)

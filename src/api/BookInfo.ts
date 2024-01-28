@@ -42,3 +42,65 @@ export async function bookCatalogue(id: string): response<string[]> {
 export async function bookContent(param: any): response<bookContentT> {
   return await get(urlPrefix + '/getChapter', { ...param })
 }
+
+type searchType = {
+  keyword: string
+  pageSize: number
+  limit: number
+  sortOrder: number
+}
+type mapType<T> = {
+  total: number
+  list: T[]
+}
+export type bookInfo = {
+  id: number
+  workDirection: number
+  categoryId: number
+  categoryName: string
+  picUrl: string
+  bookName: string
+  authorId: number
+  authorName: string
+  bookDesc: string
+  score: number
+  bookStatus: number
+  visitCount: number
+  wordCount: number
+  commentCount: number
+  lastChapterId: number
+  lastChapterName: string
+  lastChapterUpdateTime: string
+  isVip: number
+  subscription: number
+  browse: number
+  createTime: string
+  updateTime: string
+}
+/**
+ * 搜索
+ * @param params {
+ * keyword: string
+   pageSize: number
+   limit: number
+   sortOrder: number} 搜索值
+ * @returns 书本列表
+ */
+export async function toSearch(
+  params: searchType
+): response<mapType<bookInfo>> {
+  return await get(urlPrefix + '/search', params)
+}
+
+/**
+ * 热门搜索
+ * @param pageSize 页码
+ * @param limit 条数
+ * @returns 书本列表
+ */
+export async function hotSearch(
+  pageSize: number,
+  limit: number
+): response<bookInfo[]> {
+  return get(urlPrefix + '/hotSearch', { pageSize, limit })
+}

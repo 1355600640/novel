@@ -15,7 +15,7 @@
     <!-- 第一章内容显示章节信息 -->
     <div v-if="pageSession.page == '0'" class="frist-page-of-info">
       <div class="book_image">
-        <ImgLoading :url="pageContent.bookInfo?.picUrl" />
+        <ImgLoading :haveTr="true" :url="pageContent.bookInfo?.picUrl" />
       </div>
       <div class="book_title text-2xl">
         {{ pageContent.bookInfo?.bookName }}

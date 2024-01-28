@@ -85,6 +85,17 @@ const router = createRouter({
       component: () => import('../views/Rank.vue'),
     },
     {
+      path: '/search',
+      name: 'search',
+      meta: {
+        keepAlive: false,
+        pageHeader: true,
+        noLogin: true,
+        showCategory: true,
+      },
+      component: () => import('../views/Search.vue'),
+    },
+    {
       path: '/:pathMatch(.*)*',
       name: 'error',
       meta: {
