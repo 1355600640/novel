@@ -42,3 +42,21 @@ export function post(url: string, data?: any): any {
       return res
     })
 }
+
+export function fileUpload(url: string, file: File): any {
+  const formData = new FormData()
+  formData.append('file', file)
+  return axios
+    .post(url, formData, {
+      timeout: 15000,
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => {
+      return response
+    })
+    .then((res) => {
+      return res
+    })
+}

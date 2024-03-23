@@ -6,6 +6,27 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "20104525",
+      "name": "清除",
+      "font_class": "qingchu",
+      "unicode": "e619",
+      "unicode_decimal": 58905
+    },
+    {
+      "icon_id": "982347",
+      "name": "余额",
+      "font_class": "yue",
+      "unicode": "e65a",
+      "unicode_decimal": 58970
+    },
+    {
+      "icon_id": "12702655",
+      "name": "消息",
+      "font_class": "xiaoxi",
+      "unicode": "e657",
+      "unicode_decimal": 58967
+    },
+    {
       "icon_id": "18028242",
       "name": "详情",
       "font_class": "xiangqing1",

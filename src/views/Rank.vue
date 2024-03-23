@@ -86,6 +86,8 @@
               v-if="selectCategory.categoryId == 1"
             />
           </div>
+          <!-- TODO -->
+          <div v-else>作者人气榜</div>
           <div class="author-list"></div>
           <div class="page-menus">
             <a-pagination

@@ -67,8 +67,26 @@
             <div class="a-hover">
               <i class="iconfont icon-bg-book mr-1.5"></i>我的书架
             </div>
-            <div class="a-hover">{{ (user as any).nickName }}</div>
-            <div class="a-hover">退出</div>
+            <div class="user-image">
+              <div @click="$router.push('/user')">
+                <ImgLoading
+                  :have-tr="true"
+                  :url="userImage + user.userPhoto"
+                  :isHave="true"
+                />
+              </div>
+              <div @click="$router.push('/user')" class="a-hover">
+                {{ user.nickName }}
+              </div>
+              <a-divider direction="vertical" :margin="5" />
+              <div @click="logout">退出</div>
+              <!-- <div class="user-session">
+                <div>{{ user.nickName }}</div>
+                <div class="user-operate mt-5">个人中心 <icon-right /></div>
+                <div style="width: 90%;"><a-divider :margin="5" /></div>
+                <div class="user-operate  logout">退出登录</div>
+              </div> -->
+            </div>
           </div>
           <div @click="router.push('/login')" v-else class="no-login">登录</div>
         </div>
@@ -77,15 +95,18 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { ref, reactive, Ref, watch, nextTick } from 'vue'
+import ImgLoading from './../ImgLoading.vue'
+import { ref, reactive, Ref, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { mainStore } from '../../store'
 import { storeToRefs } from 'pinia'
 import { onMounted } from 'vue'
 import { getCategoryName } from '../../api/Category'
+import { Message } from '@arco-design/web-vue'
+import Cookie from '../../utils/Cookie'
 
 const useMianStore = mainStore()
-const { user } = storeToRefs(useMianStore)
+const { user, userImage } = storeToRefs(useMianStore)
 const router = useRouter()
 const route = useRoute()
 
@@ -112,20 +133,15 @@ const getAllCategory = () => {
   })
 }
 
+/**
+ * 搜索
+ */
 const toSearch = () => {
   if (!search.value.trim()) return
   router.push(`/search?keyword=${search.value}`).then(() => {
     router.go(0)
   })
 }
-onMounted(() => {
-  if (route.query.keyword) search.value = route.query.keyword as string
-  if (localStorage.getItem('novel_token')) useMianStore.getUser()
-  getAllCategory()
-  if (route.name !== 'home' && route.meta.showCategory) {
-    ;(categoryDom.value as HTMLElement).style.setProperty('--showCategory', '1')
-  }
-})
 const showCategory = (fixed: boolean) => {
   if (route.name == 'home' && route.meta.showCategory)
     (categoryDom.value as HTMLElement).style.setProperty(
@@ -133,6 +149,33 @@ const showCategory = (fixed: boolean) => {
       fixed ? '1' : '0'
     )
 }
+
+/**
+ * 用户退出登录
+ */
+const logout = () => {
+  useMianStore.clearUser().then((r) => {
+    if (r.status == 200) {
+      Message.success(r.data)
+      router.push('/')
+    }
+  })
+}
+onMounted(() => {
+  let longToken = localStorage.getItem('novel_token_long'),
+    token = Cookie.getCookie('novel_token')
+  if (route.query.keyword) search.value = route.query.keyword as string
+  if (!token && longToken) {
+    useMianStore.toGetNewToken().then(() => {
+      useMianStore.getUser()
+    })
+  }
+  if (localStorage.getItem('novel_token_long')) useMianStore.getUser()
+  getAllCategory()
+  if (route.name !== 'home' && route.meta.showCategory) {
+    ;(categoryDom.value as HTMLElement).style.setProperty('--showCategory', '1')
+  }
+})
 </script>
 <style lang="scss" scoped>
 #hearder {
@@ -143,6 +186,7 @@ const showCategory = (fixed: boolean) => {
   padding: 10px 0;
   box-shadow: 4px 1px 8px 0px #e0e0e0;
   background: white;
+  min-width: 1250px;
   .logo {
     display: flex;
     justify-content: center;
@@ -153,7 +197,7 @@ const showCategory = (fixed: boolean) => {
     }
   }
   .search {
-    padding: 0 10%;
+    padding: 0 8%;
     :deep .arco-btn {
       background-color: rgb(var(--qing-color));
       &:hover {
@@ -275,6 +319,47 @@ const showCategory = (fixed: boolean) => {
         width: 1px;
         height: 100%;
         background: #e0e0e0;
+      }
+      .user-image {
+        padding: 0;
+        margin-left: 30px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        .arco-image {
+          border-radius: 50%;
+          overflow: hidden;
+          width: 35px !important;
+          height: 35px !important;
+        }
+        .user-session {
+          width: 285px;
+          position: absolute;
+          right: 0;
+          box-sizing: border-box;
+          top: 53px;
+          border-radius: 16px;
+          background-color: white;
+          padding: 30px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          .user-operate {
+            display: flex;
+            justify-content: space-between;
+            width: 90%;
+            box-sizing: border-box;
+            padding: 10px 15px;
+            border-radius: 12px;
+            align-items: center;
+            &:hover {
+              background-color: #f6f8fa;
+            }
+          }
+          .logout {
+            // padding-top: 30px;
+          }
+        }
       }
     }
   }

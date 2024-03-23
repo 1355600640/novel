@@ -60,7 +60,7 @@ const router = createRouter({
       path: '/category/:index?',
       name: 'category',
       meta: {
-        keepAlive: true,
+        keepAlive: false,
         pageHeader: true,
         noLogin: true,
         showCategory: true,
@@ -90,10 +90,59 @@ const router = createRouter({
       meta: {
         keepAlive: false,
         pageHeader: true,
-        noLogin: true,
+        noLogin: false,
         showCategory: true,
       },
       component: () => import('../views/Search.vue'),
+    },
+    {
+      path: '/user',
+      name: 'user',
+      meta: {
+        keepAlive: true,
+        pageHeader: true,
+        noLogin: false,
+        showCategory: true,
+      },
+      component: () => import('../views/user/User.vue'),
+      children: [
+        {
+          path: '',
+          name: 'userInfo',
+          meta: {
+            pageItem: 0,
+          },
+          component: () => import('../views/user/UserInfo.vue'),
+        },
+        {
+          path: 'userRead',
+          meta: {
+            pageItem: 1,
+          },
+          component: () => import('../views/user/UserRead.vue'),
+        },
+        {
+          path: 'userAccount',
+          meta: {
+            pageItem: 2,
+          },
+          component: () => import('../views/user/UserAccount.vue'),
+        },
+        {
+          path: 'session',
+          meta: {
+            pageItem: 3,
+          },
+          component: () => import('../views/user/Session.vue'),
+        },
+        {
+          path: 'changeUser',
+          meta: {
+            pageItem: 4,
+          },
+          component: () => import('../views/user/ChangeUser.vue'),
+        },
+      ],
     },
     {
       path: '/:pathMatch(.*)*',
@@ -115,7 +164,8 @@ router.onError((handler) => {
 })
 
 router.beforeEach((to, from, next) => {
-  if (to.meta.noLogin == false && !localStorage.getItem('novel_token')) {
+  let token = localStorage.getItem('novel_token_long')
+  if (to.meta.noLogin == false && !token) {
     next({
       name: 'login',
     })
@@ -123,9 +173,11 @@ router.beforeEach((to, from, next) => {
       content: '请先登录',
       duration: 3000,
     })
+    return
   }
-  if (to.name == 'login' && localStorage.getItem('novel_token')) {
+  if (to.name == 'login' && token) {
     next('/')
+    return
   }
   next()
   window.scrollTo(0, 0)

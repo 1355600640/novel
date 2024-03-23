@@ -16,7 +16,10 @@
         <div class="autor-penName">{{ author.penName }}</div>
         <div class="author-tags">
           <div>
-            <img src="../assets/image/authorizationAuthor.png" alt="" />
+            <img
+              :src="store.mainImage + '/userIcon/authorizationAuthor.png'"
+              alt=""
+            />
             <span>金牌作者</span>
           </div>
         </div>
@@ -75,12 +78,12 @@
                   >
                 </div>
               </div>
-              <button
-                class="text-sm"
+              <div
+                class="text-sm read-book text-overflow"
                 @click="$router.push(`/chapter/${item.id}/0`)"
               >
                 立即阅读
-              </button>
+              </div>
             </div>
           </div>
           <div v-if="pageSession.total > pageSession.num" class="page">
@@ -102,6 +105,8 @@ import { useRoute } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
 import { normNumber, dateToNum, stringToDate } from '../utils/commonUtils'
 import ImgLoading from '../components/ImgLoading.vue'
+import { mainStore } from '../store'
+let store = mainStore()
 const route = useRoute()
 
 let author: Ref<authorInfo> = ref({} as authorInfo)
@@ -285,8 +290,11 @@ onMounted(() => {
           display: inline-block;
           position: relative;
         }
-        button {
-          padding: 10px 20px;
+        .read-book {
+          width: 100px;
+          cursor: pointer;
+          text-align: center;
+          line-height: 35px;
           border-radius: 9999px;
           border: 1px solid rgb(var(--qing-color));
           color: rgb(var(--qing-color));

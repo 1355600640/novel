@@ -13,47 +13,52 @@
       <span>{{ pageContent.bookInfo?.bookName }}</span>
     </div>
     <!-- 第一章内容显示章节信息 -->
-    <div v-if="pageSession.page == '0'" class="frist-page-of-info">
-      <div class="book_image">
-        <ImgLoading :haveTr="true" :url="pageContent.bookInfo?.picUrl" />
-      </div>
-      <div class="book_title text-2xl">
-        {{ pageContent.bookInfo?.bookName }}
-      </div>
-      <div class="book_author" style="color: #666">
-        {{ pageContent.bookInfo?.authorName }}
-      </div>
-      <div class="book_session">
-        <div>
-          <div>{{ pageContent.bookInfo?.categoryName }}</div>
-          <div>类型</div>
+    <a-spin style="width: 100%; min-height: 500px" :loading="loading">
+      <div
+        v-if=" pageContent!.bookChapter?.chapterNum==0"
+        class="frist-page-of-info"
+      >
+        <div class="book_image">
+          <ImgLoading :haveTr="true" :url="pageContent.bookInfo?.picUrl" />
         </div>
-        <div>
+        <div class="book_title text-2xl">
+          {{ pageContent.bookInfo?.bookName }}
+        </div>
+        <div class="book_author" style="color: #666">
+          {{ pageContent.bookInfo?.authorName }}
+        </div>
+        <div class="book_session">
           <div>
-            {{ stringToDate(pageContent.bookInfo?.createTime, 'date') }}
+            <div>{{ pageContent.bookInfo?.categoryName }}</div>
+            <div>类型</div>
           </div>
-          <div>首发时间</div>
-        </div>
-        <div>
           <div>
-            {{ normNumber(pageContent.bookInfo?.wordCount as number, 1) }}
+            <div>
+              {{ stringToDate(pageContent.bookInfo?.createTime, 'date') }}
+            </div>
+            <div>首发时间</div>
           </div>
-          <div>字数</div>
+          <div>
+            <div>
+              {{ normNumber(pageContent.bookInfo?.wordCount as number, 1) }}
+            </div>
+            <div>字数</div>
+          </div>
         </div>
+        <div style="color: #999">与众多书友一起开启品质阅读</div>
       </div>
-      <div style="color: #999">与众多书友一起开启品质阅读</div>
-    </div>
-    <div class="page-content">
-      <div class="page-title text-center text-3xl pt-20">
-        {{ numberToCapital(pageContent.bookChapter?.chapterName) }}
+      <div class="page-content">
+        <div class="page-title text-center text-3xl pt-20">
+          {{ numberToCapital(pageContent.bookChapter?.chapterName) }}
+        </div>
+        <div class="page-session">
+          <div>作者:{{ pageContent.bookInfo?.authorName }}</div>
+          <div>本章字数:{{ pageContent.bookChapter?.wordCount }}</div>
+          <div>更新时间:{{ pageContent.bookChapter?.updateTime }}</div>
+        </div>
+        <div class="page-content-text" v-html="pageContent.content"></div>
       </div>
-      <div class="page-session">
-        <div>作者:{{ pageContent.bookInfo?.authorName }}</div>
-        <div>本章字数:{{ pageContent.bookChapter?.wordCount }}</div>
-        <div>更新时间:{{ pageContent.bookChapter?.updateTime }}</div>
-      </div>
-      <div class="page-content-text" v-html="pageContent.content"></div>
-    </div>
+    </a-spin>
     <div class="button">
       <div @click="toPage(-1)">上一章</div>
       <div
@@ -83,10 +88,11 @@ type pageSessionType = {
 }
 let pageContent: Ref<bookContentT> = ref({} as bookContentT)
 let pageSession: Ref<pageSessionType> = ref({
-  page: '0',
-  bookId: '',
-  pageId: '',
-})
+    page: '0',
+    bookId: '',
+    pageId: '',
+  }),
+  loading = ref(false)
 
 const useMianStore = mainStore()
 let { pageButton } = storeToRefs(useMianStore)
@@ -123,20 +129,27 @@ watch(
 )
 // 获取章节内容
 const getBookContent = async () => {
+  loading.value = true
   // TODO 如果没有章节跳转最近阅读的章节，没有则跳转至第一章
   bookContent({
     id: pageSession.value.bookId,
     page: pageSession.value.page,
     chapterId: pageSession.value.pageId,
-  }).then((r) => {
-    if (r.data.status === 200) {
-      pageContent.value = r.data.data
-      pageContent.value.content = pageContent.value.content.replaceAll(
-        '<br/><br/>',
-        '<br/>'
-      )
-    } else router.back()
-  })
+  }).then(
+    (r) => {
+      if (r.data.status === 200) {
+        pageContent.value = r.data.data
+        pageContent.value.content = pageContent.value.content.replaceAll(
+          '<br/><br/>',
+          '<br/>'
+        )
+      } else router.back()
+      loading.value = false
+    },
+    () => {
+      loading.value = false
+    }
+  )
 }
 
 const toPage = (upOrDown: number) => {

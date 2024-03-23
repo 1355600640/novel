@@ -1,6 +1,10 @@
 import { Message } from '@arco-design/web-vue'
-import { response } from '../utils/RequestUtils'
 import axios from 'axios'
+import Cookie from '../utils/Cookie'
+import { mainStore } from '../store'
+import router from '../router/index'
+import { nextTick } from 'vue'
+
 const instance = axios.create({
   withCredentials: false,
   timeout: 15000,
@@ -9,10 +13,13 @@ const instance = axios.create({
 // 请求拦截器
 instance.interceptors.request.use(
   (config) => {
-    config.url = '/api' + config.url
-    if (localStorage.getItem('novel_token')) {
-      config.headers.Authorization =
-        'Bearer ' + localStorage.getItem('novel_token')
+    let longToken = localStorage.getItem('novel_token_long'),
+      token = Cookie.getCookie('novel_token')
+    if (!config.url?.includes('/api')) config.url = '/api' + config.url
+    if (token) {
+      config.headers.Authorization = 'Bearer ' + token
+    } else if (longToken) {
+      config.headers.Authorization = 'Long-Bearer ' + longToken
     }
     return config
   },
@@ -22,13 +29,34 @@ instance.interceptors.request.use(
 )
 
 // 响应拦截器
-instance.interceptors.response.use((response) => {
+instance.interceptors.response.use(async (response) => {
+  const useMianStore = mainStore()
   if (response.status === 200) {
     if (response.data.status !== 200) {
-      Message.error(response.data.message || '参数错误')
+      Message.clear()
+      // Message.error(response.data.message || '参数错误')
+      // 获取新Token
       if (response.data.status === 405) {
-        // 跳转到登录页
-        history.pushState({ page: 'login' }, 'login', '/login')
+        let longToken = localStorage.getItem('novel_token_long'),
+          token = Cookie.getCookie('novel_token')
+        Cookie.clearCookie('novel_token')
+        if (longToken && token)
+          return useMianStore.toGetNewToken().then(async (r) => {
+            const resp = await instance.request(response.config)
+            return resp
+          })
+      }
+      // 长Token失效重新登录
+      else if (response.data.status === 406) {
+        Message.clear()
+        localStorage.removeItem('novel_token_long')
+        Cookie.clearCookie('novel_token_')
+        router.push('/login').then(() => {
+          nextTick(() => {
+            console.log(Message);
+            Message.error(response.data.message)
+          })
+        })
       }
     }
   }

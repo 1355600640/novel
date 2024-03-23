@@ -1,12 +1,26 @@
 import { defineStore } from 'pinia'
-import { getUserSession } from '../api/User'
+import { getNewToken, getUserSession } from '../api/User'
+import { userInfoDto, userLogout } from '../api/User'
+import Cookie from '../utils/Cookie'
+import { stringToDate } from '../utils/commonUtils'
+import { log } from 'console'
 export const mainStore = defineStore('main', {
   state() {
-    return {
-      user: new Map(),
+    type dataType = {
+      user: userInfoDto
+      imgUrl: string
+      pageButton: string
+      userImage: string
+      mainImage: string
+    }
+    let data: dataType = {
+      user: {} as userInfoDto,
       imgUrl: '/api/images/book',
       pageButton: '',
+      userImage: '/api/images',
+      mainImage: '/api/images',
     }
+    return { ...data }
   },
   getters: {
     getPageButton(state) {
@@ -17,6 +31,35 @@ export const mainStore = defineStore('main', {
     getUser() {
       getUserSession().then((r: any) => {
         this.user = r.data.data
+        this.user.birthday = stringToDate(this.user.birthday, 'date')
+      })
+    },
+    /**
+     * 用户登出
+     */
+    async clearUser() {
+      let session: any = {}
+      await userLogout().then((r) => {
+        session = r.data
+        Cookie.clearCookie('novel_token')
+        localStorage.removeItem('novel_token_long')
+        this.user = {} as any
+      })
+      return session
+    },
+    // 重新获取Token
+    async toGetNewToken() {
+      await getNewToken().then((r) => {
+        if (r.data.status === 200) {
+          console.log(1)
+          Cookie.setCookie(
+            {
+              novel_token: r.data.data.token,
+            },
+            1
+          )
+          localStorage.setItem('novel_token_long', r.data.data.tokenLong)
+        }
       })
     },
   },

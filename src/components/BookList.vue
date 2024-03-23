@@ -12,7 +12,11 @@
           <span v-if="index >= 3"
             >{{ index + 1 < 10 ? '0' : '' }}{{ index + 1 }}</span
           >
-          <img v-else :src="getIcon(index + 1)" alt="" />
+          <img
+            v-else
+            :src="store.mainImage + `/bookIcon/rank${index + 1}.png`"
+            alt=""
+          />
         </div>
         <div class="bookname flex flex-col">
           <div @click="$router.push(`/detail/${item.id}`)" class="name a-hover">
@@ -52,10 +56,10 @@
 <script lang="ts" setup>
 import imgLoading from '../components/ImgLoading.vue'
 import { ref, Ref, onMounted } from 'vue'
+import { mainStore } from '../store'
+let store = mainStore()
 let bookList: Ref<HTMLElement> = ref(null as any)
-function getIcon(index: number) {
-  return new URL(`../assets/image/rank${index}.png`, import.meta.url).href
-}
+
 onMounted(() => {
   let item = bookList.value?.querySelector('.rankBook-item')
   bookList.value?.style.setProperty(

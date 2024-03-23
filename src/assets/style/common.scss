@@ -3,6 +3,9 @@
   --qing-color:40 102 246/96%;
   --qing-color-hover:0 50 255 / 96%;
 }
+html,body{
+  height: 100%;
+}
 
 .main-color{
   color: rgb(var(--qing-color));
@@ -10,10 +13,9 @@
 i{
   font-style: normal;
 }
-// *{
-//   padding: 0;
-//   margin: 0;
-// }
+*{
+  // font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
 a{
   text-decoration: none;
 }

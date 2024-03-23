@@ -1,6 +1,6 @@
 ﻿<template>
   <a-image
-    :src="(isHave ? '' : imgUrl) + url"
+    :src="(isHave ? '' : imgUrl) + (url || '')"
     show-loader
     width="100%"
     height="100%"
@@ -16,7 +16,7 @@
           transform: translateX(-50%);
           left: 50%;
         "
-        src="../assets/image/loading.png"
+        :src="useMainStore.mainImage + '/book/loading.png'"
         alt=""
       />
     </template>
@@ -29,7 +29,7 @@ import { storeToRefs } from 'pinia'
 const useMainStore = mainStore()
 const { imgUrl } = storeToRefs(useMainStore)
 type props = {
-  url: string
+  url: string | undefined
   isShadow?: boolean
   isHave?: boolean
   haveTr?: boolean

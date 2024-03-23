@@ -13,9 +13,9 @@ export function stringToDate(
   let dateString =
     date.getFullYear() +
     '-' +
-    ((date.getMonth() >= 10 ? '' : '0') + date.getMonth()) +
+    ((date.getMonth() + 1 >= 10 ? '' : '0') + (date.getMonth() + 1)) +
     '-' +
-    ((date.getDay() >= 10 ? '' : '0') + date.getDay())
+    ((date.getDate() >= 10 ? '' : '0') + date.getDate())
   if (model == 'all') {
     dateString +=
       ' ' +
@@ -105,6 +105,14 @@ export function removeOfFrontSpace(text: string): string {
   return text
 }
 
+/**
+ * 将指定文字标出关键字
+ * @param content 替换的文字
+ * @param keyword 关键字
+ * @param el 要转换的el类型
+ * @param classNameList el的class列表
+ * @returns
+ */
 export function markerKeys(
   content: string,
   keyword: string,
@@ -138,4 +146,59 @@ export function markerKeys(
   let reduceText = `<${el} class="${className}">${keyWords}</${el}>`
   content = content.replaceAll(keyWords, reduceText)
   return content
+}
+
+/**
+ * 求出传入时间距离现在多久
+ * @param data 之前时间
+ * @returns 距离现在多久
+ */
+export function oldDataToNow(data: string): string {
+  let time = new Date(data).getTime(),
+    nowDate = Date.now()
+  let timeDifference = parseInt((nowDate - time) / 1000 + '')
+  let localToNow = ''
+  if (timeDifference / 60 / 60 / 24 < 1) {
+    if (timeDifference < 60 * 60 * 24) {
+      localToNow += parseInt(timeDifference / (60 * 60 * 24) + '') + '小时'
+    } else if (timeDifference < 60 * 60) {
+      localToNow += parseInt(timeDifference / (60 * 60) + '') + '分钟'
+    } else if (timeDifference > 0) {
+      localToNow += timeDifference + '秒'
+    }
+    return localToNow + '前'
+  }
+  timeDifference = parseInt(timeDifference / 60 / 60 / 24 + '')
+  if (timeDifference > 365) {
+    let localTime = new Date(time)
+    return (
+      localTime.getFullYear() +
+      '-' +
+      (localTime.getMonth() + 1) +
+      '-' +
+      localTime.getDay()
+    )
+  } else if (timeDifference > 30) {
+    localToNow += parseInt(timeDifference / 30 + '') + '月'
+  } else if (timeDifference > 0) {
+    localToNow += timeDifference + '天'
+  }
+  return localToNow + '前'
+}
+
+/**
+ * 文件里类型转boob
+ * @param file 文件
+ * @returns
+ */
+export function fileToBlob(file: File) {
+  return new Promise<Blob>((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onloadend = () => {
+      const blob = new Blob([reader.result as any], { type: file.type })
+      resolve(blob)
+    }
+    reader.onerror = reject
+    reader.readAsArrayBuffer(file)
+  })
 }

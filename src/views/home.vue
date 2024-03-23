@@ -747,6 +747,7 @@ onMounted(() => {
     }
     .banner_right {
       overflow: hidden;
+      flex: 1;
       .banner_announcement_title {
         font-size: 18px;
         font-weight: 700;

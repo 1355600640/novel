@@ -17,6 +17,7 @@ export interface authorInfo {
   updateTime: string
   words: number
   bookNum: number
+  intro: string
 }
 
 /**
@@ -63,4 +64,38 @@ export async function getHotAuthor(
   limit: number
 ): response<hotAuthor[]> {
   return await get(urlPrefix + '/getHot', { pageSzie, limit })
+}
+
+/**
+ * 关注作者
+ * @param authorId 作者id
+ * @returns {string}
+ */
+export async function followAuthor(authorId: number): response<string> {
+  return post(urlPrefix + '/user/followAuthor', authorId)
+}
+
+/**
+ * 取消关注作者
+ * @param authorId 作者id
+ * @returns {string}
+ */
+export async function removeFollow(authorId: number): response<string> {
+  return post(urlPrefix + '/user/removeFollow', authorId)
+}
+
+/**
+ * 用户关注作者列表
+ * @param pageSzie 页码(default=1)
+ * @param limit 数据数(default=10)
+ * @returns 关注作者列表
+ */
+export async function userFollowAuthor(
+  pageSzie?: number,
+  limit?: number
+): response<{
+  list: authorInfo[]
+  total: number
+}> {
+  return get(urlPrefix + '/user/getAuthors', { pageSzie, limit })
 }

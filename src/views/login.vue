@@ -202,11 +202,19 @@ const rules = {
   ],
   code: [{ required: true, message: '请填写验证码' }],
 }
+
 /**登录 */
+import cookie from '../utils/Cookie'
 let login = () => {
   loginUser(loginForm.value).then((r: any) => {
     if (r.data.status == 200) {
-      localStorage.setItem('novel_token', r.data.data.Token)
+      cookie.setCookie(
+        {
+          novel_token: r.data.data.Token,
+        },
+        1
+      )
+      localStorage.setItem('novel_token_long', r.data.data.LongToken)
       router.push('/')
       Message.success('登录成功')
     } else Message.error(r.data.message)
@@ -231,7 +239,6 @@ let regist = () => {
         getCode()
       } else {
         getCode()
-        Message.error(r.data.data)
       }
     })
   }
@@ -283,6 +290,7 @@ const updateOverlayP = (
 ): void => {
   if (isSumbit == null) {
     loginView.value?.style.setProperty('--overlayL', black ? '0%' : '100%')
+    loginView.value?.style.setProperty('--backposi', black ? 'left' : 'right')
     loginView.value?.style.setProperty('--buttonMove', black ? '0%' : '50%')
     loginView.value?.style.setProperty('--returnButton', black ? '1' : '0')
   }
@@ -303,6 +311,7 @@ onMounted(() => {
   --buttonMove: 50%;
   --buttonTransitionDuration: 600;
   --returnButton: 0;
+  --backposi: right;
   $transitionSetting: all calc(var(--buttonTransitionDuration) * 1ms) ease;
   background: url('../../public/background.jpg') no-repeat center center;
   background-size: 100% 100%;
@@ -347,7 +356,7 @@ onMounted(() => {
             }
           }
           .arco-form-item-label {
-            font-size: 0.8vw;
+            // font-size: 0.8vw;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
@@ -380,9 +389,10 @@ onMounted(() => {
       top: 0;
       left: 0;
       transform: translateX(var(--overlayL)) translateZ(0);
-      background: url('../../public/background.jpg') no-repeat center left;
+      background: url('../../public/background.jpg') no-repeat center
+        var(--backposi);
       background-size: 200% 100%;
-      background-position: (var(--overlayL), 0);
+      // background-position: (var(--overlayL), 0);
       transition: $transitionSetting;
       overflow: hidden;
       z-index: 999;

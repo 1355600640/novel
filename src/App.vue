@@ -2,17 +2,19 @@
   <div ref="app" id="app" class="bright">
     <PageHeader v-if="route.meta.pageHeader" />
     <NavigationBar v-if="route.meta.navigationBar" />
-    <router-view
-      v-if="!$route.meta.keepAlive"
-      :key="$route.fullPath"
-      v-slot="{ Component }"
-    >
-      <keep-alive>
-        <component :is="Component" />
-      </keep-alive>
-    </router-view>
-    <router-view v-else="$route.meta.keepAlive"></router-view>
-    <page-footer v-show="!$route.meta.displayBottom" />
+    <div class="app-center">
+      <router-view
+        v-if="!$route.meta.keepAlive"
+        :key="$route.fullPath"
+        v-slot="{ Component }"
+      >
+        <keep-alive>
+          <component :is="Component" />
+        </keep-alive>
+      </router-view>
+      <router-view v-else="$route.meta.keepAlive"></router-view>
+      <page-footer v-show="!$route.meta.displayBottom" />
+    </div>
     <PageButton />
   </div>
 </template>
@@ -31,9 +33,23 @@ const app = ref()
 @import './assets/style/BrightSubject.scss';
 #app {
   width: 100%;
-  min-width: 1000px;
-  min-height: 100vh;
+  height: 100%;
+  min-width: 1200px;
   position: relative;
   overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  .app-center {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+
+    > div {
+      &:first-child {
+        flex: 1;
+      }
+    }
+  }
 }
 </style>

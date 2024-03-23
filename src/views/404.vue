@@ -33,19 +33,21 @@
 <script lang="ts" setup>
 import { onMounted, ref, Ref } from 'vue'
 const error: Ref<HTMLElement> = ref(null as any)
-const { session } = defineProps({
-  session: String,
-})
+type Props = {
+  session: string
+  inContent?: boolean
+}
+const { session, inContent } = defineProps<Props>()
 onMounted(() => {
   const pageHeader = document.querySelector('#pageHeader')
   const footer = document.querySelector('.footer')
 
-  if (pageHeader && footer)
-    error.value.style.height =
-      document.body.clientHeight -
-      pageHeader?.clientHeight -
-      footer?.clientHeight +
-      'px'
+  // if (pageHeader && footer && !inContent)
+  //   error.value.style.height =
+  //     document.body.clientHeight -
+  //     pageHeader?.clientHeight -
+  //     footer?.clientHeight +
+  //     'px'
 })
 </script>
 <style lang="scss" scoped>

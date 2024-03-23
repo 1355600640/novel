@@ -1,10 +1,14 @@
 ﻿<template>
   <div class="rank-book-info">
     <div class="book-rank" v-if="!notShowNumber">
-      <div v-if="index >= 3" class="font-sans">
+      <div v-if="index > 3" class="font-sans">
         {{ (index < 9 ? '0' : '') + index }}
       </div>
-      <img v-else :src="getIcon(index)" alt="" />
+      <img
+        v-else
+        :src="store.mainImage + `/bookIcon/rank${index}.png`"
+        alt=""
+      />
     </div>
     <div class="book-info">
       <div
@@ -89,6 +93,8 @@
 <script lang="ts" setup>
 import ImgLoading from '../ImgLoading.vue'
 import { removeOfFrontSpace } from '../../utils/commonUtils'
+import { mainStore } from '../../store'
+let store = mainStore()
 
 type Props = {
   rankData: any
@@ -100,9 +106,9 @@ type Props = {
 }
 const { rankData, index, notShowNumber, notShowSetBookshelf, isRead, noHover } =
   defineProps<Props>()
-function getIcon(index: number) {
-  return new URL(`../../assets/image/rank${index}.png`, import.meta.url).href
-}
+// function getIcon(index: number) {
+//   return new URL(`../../assets/image/rank${index}.png`, import.meta.url).href
+// }
 </script>
 <style lang="scss" scoped>
 .rank-book-info {
