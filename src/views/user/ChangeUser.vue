@@ -1,6 +1,6 @@
 ﻿<template>
   <div id="change-user">
-    <a-tabs default-active-key="3" :lazy-load=true>
+    <a-tabs default-active-key="1" :lazy-load="true">
       <a-tab-pane key="1" title="基本信息">
         <upDateUserSession />
       </a-tab-pane>
