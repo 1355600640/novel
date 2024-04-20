@@ -1,5 +1,6 @@
 ﻿import { get, post, response } from '../utils/RequestUtils'
 import { pageData } from './Common'
+import { userInfo } from './User'
 
 const urlPrefix = '/sys'
 
@@ -10,6 +11,9 @@ export interface sysSession {
   level: string
   createTime: string
   deleted: number
+  userInfo:userInfo
+  sessionUrl:string
+  remark:string
 }
 
 /**
@@ -20,9 +24,10 @@ export interface sysSession {
  */
 export async function sysSessionOfUser(
   pageSize: number,
-  limit: number
+  limit: number,
+  type: number
 ): response<pageData<sysSession>> {
-  return get(urlPrefix + '/user/sysSession', { pageSize, limit })
+  return get(urlPrefix + '/user/sysSession', { pageSize, limit, type })
 }
 
 /**
@@ -32,4 +37,15 @@ export async function sysSessionOfUser(
  */
 export async function removeSession(ids: string[]): response<string> {
   return post(urlPrefix + '/user/removeSysSession', ids)
+}
+
+export type NoReadSystemLogNumberDto = {
+  noReadLike:number
+  noReadSystem:number
+  noReadComment:number
+
+}
+
+export async function noReadSessionNumber():response<NoReadSystemLogNumberDto> {
+  return get(urlPrefix + '/user/noRead')
 }

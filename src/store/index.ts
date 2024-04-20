@@ -3,7 +3,6 @@ import { getNewToken, getUserSession } from '../api/User'
 import { userInfoDto, userLogout } from '../api/User'
 import Cookie from '../utils/Cookie'
 import { stringToDate } from '../utils/commonUtils'
-import { log } from 'console'
 export const mainStore = defineStore('main', {
   state() {
     type dataType = {

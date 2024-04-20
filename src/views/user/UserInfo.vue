@@ -30,9 +30,10 @@
             </div>
           </div>
         </div>
-        <!-- TODO 个人主页 -->
         <div class="a-hover cursor-pointer">
-          个人主页<icon-right class="ml-1" />
+          <div @click="router.push(`/people/${user.id}/2`)">
+            个人主页<icon-right class="ml-1" />
+          </div>
         </div>
       </div>
       <div class="user-intro mt-14">
@@ -46,14 +47,16 @@
             <i class="iconfont icon-yue"></i>
             帐号余额
           </div>
-          <!-- TODO -->
+          <!-- TODO 明细 -->
           <div class="cursor-pointer">明细<icon-caret-right /></div>
         </div>
         <div class="gap-xl account-count flex flex-col items-center">
           <div class="text-3xl font-bold">{{ user.accountBalance }}</div>
           <div class="text-gray-600 text-xs">书币</div>
         </div>
-        <div class="user-account-operate"><button>充值</button></div>
+        <div class="user-account-operate">
+          <button @click="router.push('/user/userAccount')">充值</button>
+        </div>
       </div>
       <div class="user-account-session">
         <div class="account-title">
@@ -62,12 +65,13 @@
             系统消息
           </div>
         </div>
-        <!-- TODO -->
         <div class="gap-xl account-count flex flex-col items-center">
-          <div class="text-3xl font-bold">0</div>
+          <div class="text-3xl font-bold">{{ user.userNoReadSystem }}</div>
           <div class="text-gray-600 text-xs">未读系统消息</div>
         </div>
-        <div class="user-account-operate"><button>查看详情</button></div>
+        <div class="user-account-operate">
+          <button @click="$router.push('/user/session')">查看详情</button>
+        </div>
       </div>
     </div>
     <div class="user-read mt-5">
@@ -78,10 +82,15 @@
 <script lang="ts" setup>
 import { mainStore } from '../../store'
 import { storeToRefs } from 'pinia'
+import { onMounted } from 'vue'
 import ImgLoading from '../../components/ImgLoading.vue'
 import UserRead from './UserRead.vue'
+import router from '../../router'
 let store = mainStore()
 let { user, userImage } = storeToRefs(store)
+onMounted(() => {
+  store.getUser()
+})
 </script>
 <style lang="scss" scoped>
 #userInfo {

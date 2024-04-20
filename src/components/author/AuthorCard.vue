@@ -50,15 +50,6 @@ const { author } = defineProps<props>()
   color: 666;
   gap: 15px;
 
-  &:nth-child(1) {
-    background: linear-gradient(135deg, #f9f6e6, white);
-  }
-  &:nth-child(2) {
-    background: linear-gradient(135deg, #f1edf7, white);
-  }
-  &:nth-child(3) {
-    background: linear-gradient(135deg, #e2ebfb, white);
-  }
 
   .author-info {
     display: flex;

@@ -82,7 +82,6 @@
             </div>
           </div>
           <div class="book-time">
-            <!-- TODO 章节跳转 -->
             <span>最新章节:</span>
             <span
               class="ml-2 a-hover cursor-pointer"
@@ -117,12 +116,16 @@
                   : '立即阅读'
               }}
             </button>
-            <!-- TODO 加入书架-->
             <button
               :class="{ 'in-bookshelf': bookSession.inBookshelf }"
               @click="toBookshelf"
             >
               {{ bookSession.inBookshelf ? '已在书架' : '加入书架' }}
+            </button>
+            <button
+              @click="$router.push(`/review?id=${bookSession.bookInfo.id}`)"
+            >
+              查看评论
             </button>
           </div>
         </div>
@@ -145,16 +148,17 @@
         >
           {{ bookSession.bookInfo?.authorName }}
         </div>
-        <!-- TODO 作者百科 -->
         <div class="flex items-center gap-1 cursor-pointer a-hover">
           <img
             style="width: 25px"
             :src="store.mainImage + '/userIcon/4605684.png'"
             alt=""
           />
-          <span>作者百科</span>
+          <span
+            @click="$router.push(`/people/${bookSession.bookInfo?.authorId}`)"
+            >作者百科</span
+          >
         </div>
-        <!-- TODO 作者数据 and 关注 -->
         <!-- <div></div> -->
         <button @click="toFollowAuthor">
           {{ bookSession.followAuthor ? '已关注' : '关注' }}
@@ -495,10 +499,15 @@ onMounted(() => {
               //   right: 0;
               // }
             }
-            &:last-child {
+            &:nth-child(2) {
               background: white;
               border: 1px solid rgb(var(--qing-color));
               color: rgb(var(--qing-color));
+            }
+            &:nth-child(3) {
+              background: white;
+              background-color: rgb(var(--qing-color));
+              color: white;
             }
           }
         }

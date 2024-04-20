@@ -29,10 +29,10 @@ import { storeToRefs } from 'pinia'
 const useMainStore = mainStore()
 const { imgUrl } = storeToRefs(useMainStore)
 type props = {
-  url: string | undefined
-  isShadow?: boolean
-  isHave?: boolean
-  haveTr?: boolean
+  url: string | undefined //图片链接
+  isShadow?: boolean // 是否阴影
+  isHave?: boolean // 是否是头像
+  haveTr?: boolean // 是否包含动画
 }
 const { url, isShadow } = defineProps<props>()
 </script>
@@ -50,6 +50,9 @@ const { url, isShadow } = defineProps<props>()
     height: 100%;
     min-width: 100%;
   }
+}
+:deep .arco-image-loader-spin-text {
+  font-size: 14px;
 }
 .arco-image-loading {
   // width: 100% !important;

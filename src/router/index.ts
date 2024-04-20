@@ -68,7 +68,7 @@ const router = createRouter({
       component: () => import('../views/Category.vue'),
     },
     {
-      path: '/people/:id?',
+      path: '/people/:id?/:isAuthor?',
       name: 'people',
       meta: { pageHeader: true, noLogin: true, showCategory: true },
       component: () => import('../views/Author.vue'),
@@ -143,6 +143,17 @@ const router = createRouter({
           component: () => import('../views/user/ChangeUser.vue'),
         },
       ],
+    },
+    {
+      path: '/review',
+      name: 'review',
+      meta: {
+        keepAlive: false,
+        pageHeader: true,
+        noLogin: false,
+        showCategory: true,
+      },
+      component: () => import('../views/Review.vue'),
     },
     {
       path: '/:pathMatch(.*)*',

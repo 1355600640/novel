@@ -33,17 +33,17 @@ const app = ref()
 @import './assets/style/BrightSubject.scss';
 #app {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   min-width: 1200px;
   position: relative;
   overflow: hidden;
-  display: flex;
-  flex-direction: column;
+  // display: flex;
+  // flex-direction: column;
   overflow-y: auto;
   .app-center {
     flex: 1;
-    display: flex;
-    flex-direction: column;
+    // display: flex;
+    // flex-direction: column;
 
     > div {
       &:first-child {

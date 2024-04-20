@@ -134,20 +134,19 @@ let sortList = ref([
   },
 ])
 let sortOrder = ref(0)
-/**
- * TODO 类型排序
- */
 const sortSearch = (sort: number): undefined => {
   sortOrder.value = sort
   getSearchValue()
 }
 import { markerKeys, removeOfFrontSpace } from '../utils/commonUtils'
+import router from '../router'
 /**
  * 获取搜索到的书本列表
  */
 const getSearchValue = async () => {
   pageData.value.loading = true
   const { pageSize, limit, searchName } = pageData.value
+  if (searchName.trim() == '') router.push('/')
   await toSearch({
     sortOrder: sortOrder.value,
     pageSize,

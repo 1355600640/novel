@@ -288,7 +288,6 @@
         </div>
       </a-spin>
     </div>
-    <!-- TODO 人气作家 -->
     <div class="hot-author pt-12" ref="hotAuthorEl">
       <div class="title font-serif text-2xl font-bold">人气作家</div>
       <div class="author-cards">
@@ -306,7 +305,7 @@
 <script lang="ts" setup>
 import bookRank from '../components/BookRank.vue'
 import { recommend, announcement, ranking, lastUpdated } from '../api/Home'
-import { Ref, onMounted, ref, reactive, nextTick, watch } from 'vue'
+import { Ref, onMounted, ref, reactive } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import typeSwiper from 'swiper'
 import { Autoplay, Navigation, EffectCoverflow } from 'swiper/modules'
@@ -930,6 +929,15 @@ onMounted(() => {
       gap: 20px;
       > div {
         flex: 1;
+        &:nth-child(1) {
+          background: linear-gradient(135deg, #f9f6e6, white);
+        }
+        &:nth-child(2) {
+          background: linear-gradient(135deg, #f1edf7, white);
+        }
+        &:nth-child(3) {
+          background: linear-gradient(135deg, #e2ebfb, white);
+        }
       }
     }
   }

@@ -55,6 +55,9 @@ export interface userInfo {
   createTime: string
   updateTime: string
   intro: string
+  fansNumber:number
+  follow:number
+  ipAddress:string
 }
 
 /**
@@ -67,6 +70,8 @@ export interface userInfoDto extends userInfo {
   likeBook: number
   userUpvote: number
   birthday: string
+  readSystemNumber:number
+  userNoReadSystem:number
 }
 /**
  * 获取用户信息

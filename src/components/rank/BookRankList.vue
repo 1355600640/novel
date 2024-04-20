@@ -85,8 +85,14 @@
         shape="round"
         >{{ isRead ? '立即阅读' : '书籍详情' }}</a-button
       >
-      <!-- TODO　加入书架 -->
-      <div class="cursor-pointer text-xs text-slate-500">加入书架</div>
+      <div
+        v-if="!rankData.inBookshelf"
+        @click="$emit('addBookShelf')"
+        class="cursor-pointer text-xs text-slate-500"
+      >
+        加入书架
+      </div>
+      <div v-else class="text-xs text-slate-500">已在书架</div>
     </div>
   </div>
 </template>
@@ -106,6 +112,7 @@ type Props = {
 }
 const { rankData, index, notShowNumber, notShowSetBookshelf, isRead, noHover } =
   defineProps<Props>()
+
 // function getIcon(index: number) {
 //   return new URL(`../../assets/image/rank${index}.png`, import.meta.url).href
 // }

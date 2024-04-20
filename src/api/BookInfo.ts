@@ -145,9 +145,15 @@ export async function localRead(
 export async function userBookshelf(
   pageSize: number,
   limit: number,
-  bookStatus: number
-): response<mapType<BookInfo>> {
-  return get(urlPrefix + '/user/userBookshelf', { bookStatus, pageSize, limit })
+  bookStatus: number,
+  userId?: number
+): response<mapType<UserReadDto>> {
+  return get(urlPrefix + '/userBookshelf', {
+    bookStatus,
+    pageSize,
+    limit,
+    userId,
+  })
 }
 
 /**

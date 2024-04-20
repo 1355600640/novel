@@ -84,10 +84,12 @@
               :rank-data="item"
               :index="index + (pageData.pageSize - 1) * pageData.limit + 1"
               v-if="selectCategory.categoryId == 1"
+              @addBookShelf="addBookshelf(item.id)"
             />
           </div>
-          <!-- TODO -->
-          <div v-else>作者人气榜</div>
+          <div v-else>
+            <AuthorList :rank-data="(pageData.list as any)" />
+          </div>
           <div class="author-list"></div>
           <div class="page-menus">
             <a-pagination
@@ -114,6 +116,7 @@ import BookList from '../components/BookList.vue'
 import RankCategoryView from '../components/rank/RankCategory.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { getCategoryName } from '../api/Category'
+import AuthorList from '../components/rank/AuthorList.vue'
 import {
   rankBooks,
   rankCategoies,
@@ -148,6 +151,30 @@ let selectCategory = ref({
 watch(route, () => {
   changeRankData()
 })
+
+import { inserBookshelf } from '../api/BookInfo'
+import { Message } from '@arco-design/web-vue'
+import { mainStore } from '../store'
+let store = mainStore()
+/**
+ * 加入书架
+ */
+const addBookshelf = async (id: string) => {
+  if (!store.user.id || !localStorage.getItem('novel_token_long')) {
+    Message.warning('请登录账户')
+  } else {
+    inserBookshelf(id).then((r) => {
+      if (r.data.status == 200) {
+        Message.success('加入书架成功')
+        getRankBook(
+          selectCategory.value.rankType,
+          selectCategory.value.categoryId,
+          selectBookCategory.value
+        )
+      }
+    })
+  }
+}
 
 // 获取排行榜分类
 let getRankCategoies = async () => {

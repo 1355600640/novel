@@ -1,4 +1,5 @@
 ﻿import { get, post, response } from '../utils/RequestUtils'
+import { userInfo } from './User'
 
 const urlPrefix = '/author'
 
@@ -20,13 +21,22 @@ export interface authorInfo {
   intro: string
 }
 
+export interface People {
+  authorInfo: authorInfo
+  userInfo: userInfo
+  isAuthor: boolean
+}
+
 /**
  * 获取作者信息
  * @param id
  * @returns
  */
-export async function authorSession(id: string): response<authorInfo> {
-  return await get(urlPrefix + '/getSession', { id })
+export async function authorSession(
+  id: string,
+  isAuthor: number
+): response<People> {
+  return await get(urlPrefix + '/getSession', { id, isAuthor })
 }
 
 /**

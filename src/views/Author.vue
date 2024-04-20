@@ -6,15 +6,26 @@
       <div class="author-img">
         <div class="author-img-el">
           <ImgLoading
-            :url="'/api/images' + author.authorImage"
+            :url="
+              '/api/images' +
+              (people.isAuthor
+                ? people?.authorInfo?.authorImage
+                : people?.userInfo?.userPhoto)
+            "
             :is-have="true"
             :have-tr="true"
           />
         </div>
       </div>
       <div class="author-about">
-        <div class="autor-penName">{{ author.penName }}</div>
-        <div class="author-tags">
+        <div class="autor-penName">
+          {{
+            people.isAuthor
+              ? people?.authorInfo?.penName
+              : people?.userInfo?.nickName
+          }}
+        </div>
+        <div class="author-tags" v-if="people.isAuthor">
           <div>
             <img
               :src="store.mainImage + '/userIcon/authorizationAuthor.png'"
@@ -23,83 +34,166 @@
             <span>金牌作者</span>
           </div>
         </div>
-        <div class="author-about-session">
+        <div class="author-about-session" v-if="people.isAuthor">
           <div>
-            <span>本站作品</span><span>{{ author.bookNum }}</span>
+            <span>本站作品</span><span>{{ people.authorInfo.bookNum }}</span>
           </div>
           <span> </span>
           <div>
-            <span>累计字数</span><span>{{ normNumber(author.words, 1) }}</span>
+            <span>累计字数</span
+            ><span>{{ normNumber(people.authorInfo.words, 1) }}</span>
           </div>
           <span> </span>
           <div>
-            <span>创作天数</span><span>{{ dateToNum(author.createTime) }}</span>
+            <span>创作天数</span
+            ><span>{{ dateToNum(people.authorInfo.createTime) }}</span>
+          </div>
+        </div>
+        <div class="user-about-session" v-else>
+          <div class="session-item">
+            <span>关注TA</span><span>{{ people?.userInfo?.fansNumber }}</span>
+          </div>
+          <div class="divider"></div>
+          <div class="session-item">
+            <span>关注</span><span>{{ people?.userInfo?.follow }}</span>
           </div>
         </div>
         <div class="author-intro">
-          <span class="font-bold">简介:</span><span>暂无作者简介~</span>
+          <span class="font-bold">简介: </span>
+          <span v-if="people.isAuthor">
+            {{ people?.authorInfo?.intro || '暂无作者简介~' }}
+          </span>
+          <span v-else>
+            {{ people?.userInfo?.intro || 'Ta还有点神秘哦~' }}
+          </span>
         </div>
       </div>
       <div class="author-notice">
         <ul>
-          <li>{{ stringToDate(author.createTime, 'date') }}加入本网站</li>
+          <li>
+            ·
+            {{
+              stringToDate(
+                people.isAuthor
+                  ? people?.authorInfo?.createTime
+                  : people?.userInfo?.createTime,
+                'date'
+              )
+            }}加入本网站
+          </li>
         </ul>
       </div>
     </div>
     <div class="author-works">
-      <a-tabs default-active-key="1">
-        <a-tab-pane key="1" title="作品">
-          <div class="book-list">
-            <div class="book" v-for="item in bookList" :key="item.id">
-              <ImgLoading style="width: 82px" :url="item.picUrl" />
-              <div class="book-sesssion">
-                <div
-                  class="cursor-pointer a-hover book-name font-bold text-base"
-                >
-                  {{ item.bookName }}
-                </div>
-                <div class="book-status">
-                  <span>{{ item.bookStatus == 1 ? '已完结' : '连载中' }}</span>
-                  <span class="br"></span>
-                  <span>{{ item.categoryName }}</span>
-                </div>
-                <div title="item.bookDes" class="book-intro">
-                  {{ item.bookDesc }}
-                </div>
-                <div class="book-new-page">
-                  <span>最新章节:</span>
-                  <span
-                    @click="
-                      $router.push(
-                        `/chapter/${item.id}?pageId=${item.lastChapterId}`
-                      )
-                    "
-                    >{{ item.lastChapterName }}</span
+      <a-tabs
+        :lazy-load="true"
+        @change="changeTab"
+        :default-active-key="!route.params.isAuthor ? 1 : 2"
+      >
+        <a-tab-pane v-if="people.isAuthor" :key="1" title="作品">
+          <a-spin tip="加载中..." :loading="loading" class="loading" dot>
+            <div class="book-list">
+              <div class="book" v-for="item in bookList" :key="item.id">
+                <ImgLoading style="width: 82px" :url="item.picUrl" />
+                <div class="book-sesssion">
+                  <div
+                    class="cursor-pointer a-hover book-name font-bold text-base"
                   >
+                    {{ item.bookName }}
+                  </div>
+                  <div class="book-status">
+                    、
+                    <span>{{
+                      item.bookStatus == 1 ? '已完结' : '连载中'
+                    }}</span>
+                    <span class="br"></span>
+                    <span>{{ item.categoryName }}</span>
+                  </div>
+                  <div title="item.bookDes" class="book-intro">
+                    {{ item.bookDesc }}
+                  </div>
+                  <div class="book-new-page">
+                    <span>最新章节:</span>
+                    <span
+                      @click="
+                        $router.push(
+                          `/chapter/${item.id}?pageId=${item.lastChapterId}`
+                        )
+                      "
+                      >{{ item.lastChapterName }}</span
+                    >
+                  </div>
                 </div>
-              </div>
-              <div
-                class="text-sm read-book text-overflow"
-                @click="$router.push(`/chapter/${item.id}/0`)"
-              >
-                立即阅读
+                <div
+                  class="text-sm read-book text-overflow"
+                  @click="$router.push(`/chapter/${item.id}/0`)"
+                >
+                  立即阅读
+                </div>
               </div>
             </div>
-          </div>
-          <div v-if="pageSession.total > pageSession.num" class="page">
-            <a-pagination
-              :total="pageSession.total"
-              :current="pageSession.page"
-              :page-size="pageSession.num"
-            />
-          </div>
+            <div v-if="pageSession.total > pageSession.num" class="page">
+              <a-pagination
+                :total="pageSession.total"
+                :current="pageSession.page"
+                :page-size="pageSession.num"
+              />
+            </div>
+          </a-spin>
+        </a-tab-pane>
+        <a-tab-pane :key="2" title="在读">
+          <a-spin tip="加载中..." :loading="loading" class="loading" dot>
+            <div class="book-list">
+              <div class="book" v-for="item in bookshelf" :key="item.id">
+                <ImgLoading style="width: 82px" :url="item.picUrl" />
+                <div class="book-sesssion">
+                  <div
+                    class="cursor-pointer a-hover book-name font-bold text-base"
+                  >
+                    {{ item.bookName }}
+                  </div>
+                  <div class="book-status">
+                    <span>{{ item.authorName }}</span>
+                    <span class="br"></span>
+                    <span>{{
+                      item.bookStatus == 1 ? '已完结' : '连载中'
+                    }}</span>
+                    <span class="br"></span>
+                    <span>{{ item.categoryName }}</span>
+                    ·
+                    <span>{{ normNumber(item.wordCount, 1) }}字</span>
+                  </div>
+                  <div title="item.bookDes" class="book-intro">
+                    {{ item.bookDesc }}
+                  </div>
+                  <div class="book-new-page">
+                    <span>最新章节:</span>
+                    <span
+                      @click="
+                        $router.push(
+                          `/chapter/${item.id}?pageId=${item.lastChapterId}`
+                        )
+                      "
+                      >{{ item.lastChapterName }}</span
+                    >
+                  </div>
+                </div>
+                <div
+                  class="text-sm read-book text-overflow"
+                  @click="$router.push(`/chapter/${item.id}/0`)"
+                >
+                  立即阅读
+                </div>
+              </div>
+            </div>
+          </a-spin>
         </a-tab-pane>
       </a-tabs>
     </div>
   </div>
 </template>
 <script lang="ts" setup>
-import { authorSession, authorInfo, authorOfBook } from '../api/Author'
+import { authorSession, People, authorOfBook } from '../api/Author'
 import { ref, reactive, Ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
@@ -109,28 +203,30 @@ import { mainStore } from '../store'
 let store = mainStore()
 const route = useRoute()
 
-let author: Ref<authorInfo> = ref({} as authorInfo)
+let people: Ref<People> = ref({} as People)
 let bookList: Ref<any[]> = ref([])
 let pageSession = reactive({
   page: 1,
   num: 8,
   total: 0,
 })
-
+let loading = ref(true)
 // 获取作者信息
-const getAuthorSession = (authodId: string) => {
-  authorSession(authodId).then((r) => {
+const getAuthorSession = async (authodId: string, isAuthor: number) => {
+  return await authorSession(authodId, isAuthor).then((r) => {
     if (Object.keys(r.data.data).length == 0) {
       Message.error('没有作者信息')
     } else {
-      author.value = r.data.data
+      people.value = r.data.data
     }
   })
 }
 
 // 获取作者相关作品
 const getAuthorOfBook = (authorId: string) => {
+  loading.value = true
   authorOfBook(authorId, pageSession.page, pageSession.num).then((r) => {
+    loading.value = false
     bookList.value = (r.data.data.bookInfo as any[]).map((r) => {
       const dom = document.createElement('div')
       dom.innerHTML = r.bookDesc
@@ -141,10 +237,51 @@ const getAuthorOfBook = (authorId: string) => {
   })
 }
 
+const changeTab = (key: number | string) => {
+  pageSession = {
+    page: 1,
+    num: 8,
+    total: 0,
+  }
+  if ((key as number) == 1) {
+    const authodId: string = route.params.id as string
+    getAuthorOfBook(authodId)
+  } else if ((key as number) == 2) {
+    getUserBookList()
+  }
+}
+
+import { userBookshelf, UserReadDto } from '../api/BookInfo'
+let bookshelf = ref<UserReadDto[]>([] as UserReadDto[])
+// 获取用户书架列表
+const getUserBookList = async () => {
+  loading.value = true
+  return await userBookshelf(
+    pageSession.page,
+    pageSession.num,
+    0,
+    people.value.userInfo.id
+  ).then((r) => {
+    loading.value = false
+    if (r.status == 200) {
+      bookshelf.value = r.data.data.list.map((r) => {
+        const dom = document.createElement('div')
+        dom.innerHTML = r.bookDesc
+        r.bookDesc = dom.innerText.trim()
+        return r
+      })
+      pageSession.total = r.data.data.total
+    }
+  })
+}
+
 onMounted(() => {
-  const authodId: string = route.params.id as string
-  getAuthorSession(authodId)
-  getAuthorOfBook(authodId)
+  const authodId: string = route.params.id as string,
+    isAuthor = parseInt(route.params.isAuthor as string) || 1
+  getAuthorSession(authodId, isAuthor).then(() => {
+    if (people.value.isAuthor) getAuthorOfBook(authodId)
+    else getUserBookList()
+  })
 })
 </script>
 <style lang="scss" scoped>
@@ -152,6 +289,15 @@ onMounted(() => {
 #people {
   width: 80%;
   margin: 25px auto 80px;
+  .loading {
+    width: 100%;
+  }
+  .arco-spin-loading {
+    height: 300px;
+  }
+  :deep .arco-spin-tip {
+    margin-top: 30px;
+  }
   .people-session {
     display: flex;
     // align-items: center;
@@ -216,6 +362,29 @@ onMounted(() => {
           display: block;
         }
       }
+      .user-about-session {
+        display: flex;
+        align-items: center;
+        .divider {
+          height: 60%;
+          width: 1.5px;
+          background: #d8d8d8;
+          margin: 0 25px;
+        }
+        .session-item {
+          > span {
+            &:first-child {
+              font-size: 12px;
+              color: #999999;
+              margin-right: 5px;
+            }
+            &:last-child {
+              font-size: 18px;
+              font-weight: 700;
+            }
+          }
+        }
+      }
     }
     .author-notice {
       font-size: 12px;
@@ -242,6 +411,18 @@ onMounted(() => {
     background-color: white;
     padding: 25px 35px;
     box-sizing: border-box;
+
+    :deep .arco-tabs-tab {
+      .arco-tabs-tab-title {
+        &:hover {
+          color: rgb(var(--qing-color));
+        }
+      }
+      &:hover .arco-tabs-tab-title::before {
+        background-color: white;
+      }
+    }
+
     .book-list {
       display: flex;
       flex-direction: column;

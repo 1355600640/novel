@@ -75,5 +75,6 @@ $loadingWidth: 25px;
 }
 .loading-text {
   padding-top: 10px;
+  // font-size: 12px;
 }
 </style>

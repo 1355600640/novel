@@ -1,6 +1,5 @@
 ﻿<template>
   <div class="page-button-list">
-    <!-- TODO 按钮操作 -->
     <div
       @click="pageButton = 'bookCatalogue'"
       class="book-catalogue"
@@ -49,10 +48,9 @@
 <script lang="ts" setup>
 import { mainStore } from '../../store'
 import { storeToRefs } from 'pinia'
-import { ref } from 'vue'
+import { onBeforeMount, ref } from 'vue'
 const useMianStore = mainStore()
 let { pageButton } = storeToRefs(useMianStore)
-//TODO 阅读文本
 let isRead = ref(false)
 const readText = () => {
   if (!isRead.value) playRead()
@@ -91,6 +89,9 @@ window.addEventListener('scroll', () => {
     // document.documentElement.style.setProperty('--showTop', )
     backTopShow.value = true
   } else backTopShow.value = false
+})
+onBeforeMount(() => {
+  window.speechSynthesis.cancel()
 })
 </script>
 <style lang="scss" scoped>

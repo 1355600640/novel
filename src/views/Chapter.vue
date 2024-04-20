@@ -56,7 +56,11 @@
           <div>本章字数:{{ pageContent.bookChapter?.wordCount }}</div>
           <div>更新时间:{{ pageContent.bookChapter?.updateTime }}</div>
         </div>
-        <div class="page-content-text" v-html="pageContent.content"></div>
+        <div
+          class="page-content-text"
+          v-html="pageContent.content"
+          ref="bookText"
+        ></div>
       </div>
     </a-spin>
     <div class="button">
@@ -96,7 +100,8 @@ let pageSession: Ref<pageSessionType> = ref({
 
 const useMianStore = mainStore()
 let { pageButton } = storeToRefs(useMianStore)
-
+const bookText = ref<HTMLElement>()
+let read: SpeechSynthesisUtterance
 watch(
   () => useMianStore.$state.pageButton,
   () => {
@@ -110,18 +115,32 @@ watch(
       case 'bookInfo':
         router.push(`/detail/${pageSession.value.bookId}`)
         break
-      // TODO 调换书评论
       case 'bookReview':
-        {
-        }
+        router.push(`/review?id=${pageSession.value.bookId}`)
         break
-      // TODO 朗读章节
       case 'playReadBook':
         {
+          console.log(1)
+
+          if (!SpeechSynthesisUtterance) {
+            Message.warning('暂不支持该功能')
+          } else {
+            if (!read) {
+              read = new SpeechSynthesisUtterance(bookText.value?.innerText)
+              read.lang = 'zh-CN'
+              speechSynthesis.addEventListener('voiceschanged', () => {
+                let voices = speechSynthesis.getVoices()
+                read.voice = voices[0]
+              })
+              window.speechSynthesis.speak(read)
+            } else {
+              window.speechSynthesis.resume()
+            }
+          }
         }
         break
-      // TODO 暂停朗读章节
       case 'pauseReadBook': {
+        window.speechSynthesis.pause()
       }
     }
     pageButton.value = ''
@@ -130,7 +149,6 @@ watch(
 // 获取章节内容
 const getBookContent = async () => {
   loading.value = true
-  // TODO 如果没有章节跳转最近阅读的章节，没有则跳转至第一章
   bookContent({
     id: pageSession.value.bookId,
     page: pageSession.value.page,

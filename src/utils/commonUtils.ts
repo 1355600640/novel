@@ -6,7 +6,7 @@
  */
 export function stringToDate(
   dateCode: string | number,
-  model: 'all' | 'date'
+  model: 'all' | 'date' | 'month'
 ): string {
   if (!dateCode) return ''
   const date = new Date(dateCode)
@@ -24,12 +24,19 @@ export function stringToDate(
       ((date.getMinutes() >= 10 ? '' : '0') + date.getMinutes()) +
       ':' +
       ((date.getSeconds() >= 10 ? '' : '0') + date.getSeconds())
+  } else if (model === 'month') {
+    return (
+      (date.getMonth() + 1 >= 10 ? '' : '0') +
+      (date.getMonth() + 1) +
+      '/' +
+      ((date.getDate() >= 10 ? '' : '0') + date.getDate())
+    )
   }
   return dateString
 }
 
 /**
- * 数字转换以万为单位，保留小鼠
+ * 数字转换以万为单位，保留小数
  * @param number 待转换的数字
  * @param norm 保留位数
  * @returns
@@ -37,7 +44,7 @@ export function stringToDate(
 export function normNumber(number: number, norm: number): string {
   if (norm > 4) norm = 0
   let str = ''
-  str = parseInt(number / Math.pow(10, 4 - norm) + '') / 10 + ''
+  str = parseInt(number / Math.pow(10, 4 - norm) + '') / Math.pow(10, norm) + ''
   return str + '万'
 }
 export function numberToCapital(str: string): string {
@@ -201,4 +208,29 @@ export function fileToBlob(file: File) {
     reader.onerror = reject
     reader.readAsArrayBuffer(file)
   })
+}
+
+/**
+ * 小于一小时 显示n分钟，小于一天 显示n小时
+ * 小于七天 显示n天，大于7天 显示月/日，小于本年 显示 年/月/日
+ * @returns 时间
+ * @param time 时间
+ */
+export function dateToString(time: string) {
+  let date = new Date(time)
+  let dateNumber = (Date.now() - date.getTime()) / 1000
+  if (date.getFullYear() == new Date().getFullYear()) {
+    if (dateNumber < 60 * 60 * 24 * 7) {
+      if (dateNumber < 60 * 60 * 24) {
+        if (dateNumber < 60 * 60) {
+          return Math.ceil(dateNumber / 60) + '分钟前'
+        }
+        return parseInt(dateNumber / 60 / 60 + '') + '小时前'
+      }
+      return parseInt(dateNumber / 60 / 60 / 24 + '') + '天前'
+    }
+    return date.getMonth() + 1 + '/' + date.getDay()
+  } else {
+    return date.getFullYear() + '/' + date.getMonth() + 1 + '/' + date.getDay()
+  }
 }

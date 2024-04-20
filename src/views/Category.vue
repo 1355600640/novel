@@ -4,7 +4,7 @@
     <div class="left-category">
       <div v-for="item in pageList" :key="item.stats" class="category-child">
         <div>{{ item.title }}</div>
-        <div class="category-list">
+        <div class="category-list" v-if="item.list.length > 0">
           <div
             class="cursor-pointer a-hover"
             v-for="(child, index) in item.list"
@@ -15,6 +15,11 @@
             {{ child.name }}
           </div>
         </div>
+        <a-skeleton v-else style="margin-top: 10px" :animation="true">
+          <a-space direction="vertical" :style="{ width: '100%' }" size="large">
+            <a-skeleton-line :rows="3" />
+          </a-space>
+        </a-skeleton>
       </div>
     </div>
     <div class="right-book-list">

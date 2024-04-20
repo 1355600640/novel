@@ -1,6 +1,6 @@
 <template>
   <div id="pageHeader">
-    <a-affix @change="showCategory">
+    <a-affix @change="showCategory" style="z-index: 99999">
       <div id="hearder">
         <div @click="router.push('/')" class="logo cursor-pointer">
           <a-image
@@ -62,9 +62,8 @@
 
         <!-- 未登录 -->
         <div class="user">
-          <!-- TODO 已登录 -->
           <div v-if="user && Object.keys(user).length > 0" class="is-login">
-            <div class="a-hover">
+            <div class="a-hover" @click="router.push('/user/userRead')">
               <i class="iconfont icon-bg-book mr-1.5"></i>我的书架
             </div>
             <div class="user-image">
@@ -178,186 +177,190 @@ onMounted(() => {
 })
 </script>
 <style lang="scss" scoped>
-#hearder {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  // gap: 10%;
-  padding: 10px 0;
-  box-shadow: 4px 1px 8px 0px #e0e0e0;
-  background: white;
-  min-width: 1250px;
-  .logo {
+#pageHeader {
+  position: relative;
+  z-index: 999;
+  #hearder {
     display: flex;
     justify-content: center;
     align-items: center;
-    img {
-      width: 50px;
-      margin-right: 20px;
-    }
-  }
-  .search {
-    padding: 0 8%;
-    :deep .arco-btn {
-      background-color: rgb(var(--qing-color));
-      &:hover {
-        background-color: rgb(40 102 246 / 87%);
+    // gap: 10%;
+    padding: 10px 0;
+    box-shadow: 4px 1px 8px 0px #e0e0e0;
+    background: white;
+    min-width: 1250px;
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      img {
+        width: 50px;
+        margin-right: 20px;
       }
     }
-  }
-  .category {
-    transform: scaleX(var(--showCategory));
-    transition: all 0.3s ease;
-    margin-left: 20px;
-    position: relative;
-    z-index: 99;
-    > div {
-      display: flex;
+    .search {
+      padding: 0 8%;
+      :deep .arco-btn {
+        background-color: rgb(var(--qing-color));
+        &:hover {
+          background-color: rgb(40 102 246 / 87%);
+        }
+      }
+    }
+    .category {
+      transform: scaleX(var(--showCategory));
+      transition: all 0.3s ease;
+      margin-left: 20px;
+      position: relative;
+      z-index: 99;
       > div {
-        padding: 0 10px;
-        color: #666;
-        position: relative;
-        &:hover .book-category {
-          display: block !important;
-        }
-        > span {
-          cursor: pointer;
-        }
-        .book-category {
-          display: none !important;
-          position: absolute;
-          // bottom: 20px;
-          left: 50%;
-          padding-top: 35px;
-          transform: translateX(-50%);
-          // z-index: 99999;
-          > div {
-            background: white;
-            border-radius: 16px;
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            padding: 10px 15px;
-            gap: 10px 10px;
+        display: flex;
+        > div {
+          padding: 0 10px;
+          color: #666;
+          position: relative;
+          &:hover .book-category {
+            display: block !important;
+          }
+          > span {
+            cursor: pointer;
+          }
+          .book-category {
+            display: none !important;
+            position: absolute;
+            // bottom: 20px;
+            left: 50%;
+            padding-top: 35px;
+            transform: translateX(-50%);
+            // z-index: 99999;
             > div {
-              padding: 10px 10px;
-              width: 80px;
-              text-align: center;
+              background: white;
               border-radius: 16px;
-              line-height: 14px;
-              font-size: 14px;
-              &:hover {
-                background: rgb(var(--qing-color));
-                color: white;
+              display: grid;
+              grid-template-columns: 1fr 1fr 1fr;
+              padding: 10px 15px;
+              gap: 10px 10px;
+              > div {
+                padding: 10px 10px;
+                width: 80px;
+                text-align: center;
+                border-radius: 16px;
+                line-height: 14px;
+                font-size: 14px;
+                &:hover {
+                  background: rgb(var(--qing-color));
+                  color: white;
+                }
               }
             }
           }
+          &::after {
+            content: ' ';
+            transition: all 0.2s ease;
+            // transform: translateX(50%);
+            transform-origin: center center;
+            position: absolute;
+            bottom: -10px;
+            left: 10%;
+            width: 0;
+            height: 2px;
+            background: rgb(var(--qing-color));
+          }
         }
-        &::after {
-          content: ' ';
-          transition: all 0.2s ease;
-          // transform: translateX(50%);
-          transform-origin: center center;
-          position: absolute;
-          bottom: -10px;
-          left: 10%;
-          width: 0;
-          height: 2px;
-          background: rgb(var(--qing-color));
+        .categoryHover {
+          &::after {
+            content: ' ';
+            width: 80%;
+            // transform: translateX(50%);
+          }
         }
-      }
-      .categoryHover {
-        &::after {
-          content: ' ';
-          width: 80%;
-          // transform: translateX(50%);
-        }
-      }
-      .categoryLeave {
-        &::after {
-          content: ' ';
-          right: 10%;
-          left: auto;
-          // transform: translateX(50%);
+        .categoryLeave {
+          &::after {
+            content: ' ';
+            right: 10%;
+            left: auto;
+            // transform: translateX(50%);
+          }
         }
       }
     }
-  }
-  .user {
-    .no-login {
-      transition: all 0.3s ease;
-      cursor: pointer;
-      &:hover {
-        color: rgb(var(--qing-color));
-      }
-    }
-    .is-login {
-      display: flex;
-      // gap: 10px;
-      align-items: center;
-      > * {
-        padding-left: 20px;
-      }
-      > div {
-        min-width: 30px;
+    .user {
+      .no-login {
+        transition: all 0.3s ease;
         cursor: pointer;
-        white-space: normal;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        line-height: 15px;
-        i {
+        &:hover {
           color: rgb(var(--qing-color));
         }
-
-        &:first-child {
-          padding-right: 20px;
-          padding-left: 0;
-          border-right: 1px solid #e0e0e0;
-        }
       }
-      span {
-        display: block;
-        width: 1px;
-        height: 100%;
-        background: #e0e0e0;
-      }
-      .user-image {
-        padding: 0;
-        margin-left: 30px;
+      .is-login {
         display: flex;
+        // gap: 10px;
         align-items: center;
-        gap: 10px;
-        .arco-image {
-          border-radius: 50%;
-          overflow: hidden;
-          width: 35px !important;
-          height: 35px !important;
+        > * {
+          padding-left: 20px;
         }
-        .user-session {
-          width: 285px;
-          position: absolute;
-          right: 0;
-          box-sizing: border-box;
-          top: 53px;
-          border-radius: 16px;
-          background-color: white;
-          padding: 30px;
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          .user-operate {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            box-sizing: border-box;
-            padding: 10px 15px;
-            border-radius: 12px;
-            align-items: center;
-            &:hover {
-              background-color: #f6f8fa;
-            }
+        > div {
+          min-width: 30px;
+          cursor: pointer;
+          white-space: normal;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          line-height: 15px;
+          i {
+            color: rgb(var(--qing-color));
           }
-          .logout {
-            // padding-top: 30px;
+
+          &:first-child {
+            padding-right: 20px;
+            padding-left: 0;
+            border-right: 1px solid #e0e0e0;
+          }
+        }
+        span {
+          display: block;
+          width: 1px;
+          height: 100%;
+          background: #e0e0e0;
+        }
+        .user-image {
+          padding: 0;
+          margin-left: 30px;
+          display: flex;
+          align-items: center;
+          gap: 10px;
+          .arco-image {
+            border-radius: 50%;
+            overflow: hidden;
+            width: 35px !important;
+            height: 35px !important;
+          }
+          .user-session {
+            width: 285px;
+            position: absolute;
+            right: 0;
+            box-sizing: border-box;
+            top: 53px;
+            border-radius: 16px;
+            background-color: white;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            .user-operate {
+              display: flex;
+              justify-content: space-between;
+              width: 90%;
+              box-sizing: border-box;
+              padding: 10px 15px;
+              border-radius: 12px;
+              align-items: center;
+              &:hover {
+                background-color: #f6f8fa;
+              }
+            }
+            .logout {
+              // padding-top: 30px;
+            }
           }
         }
       }

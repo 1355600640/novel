@@ -35,7 +35,6 @@ const clickTab = (i: number, e: Event) => {
   index.value = i
   router.push(urlList[i].url)
   setMove(e.target as HTMLElement)
-  // TODO 跳转页面
 }
 
 onMounted(() => {
