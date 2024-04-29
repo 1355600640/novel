@@ -314,6 +314,10 @@ const getBookCatelogue = (bookId: string) => {
  */
 const toBookshelf = () => {
   let func
+  if (!store.user.id) {
+    Message.error('请先登录账号')
+    return
+  }
   if (!bookSession.value.inBookshelf) {
     func = inserBookshelf(bookSession.value.bookInfo.id + '')
   } else {
@@ -339,6 +343,10 @@ import { removeFollow, followAuthor } from '../api/Author'
  */
 const toFollowAuthor = () => {
   let func
+  if (!store.user.id) {
+    Message.error('请先登录账号')
+    return
+  }
   if (!bookSession.value.followAuthor) {
     func = followAuthor(bookSession.value.authorInfo.id)
   } else func = removeFollow(bookSession.value.authorInfo.id)

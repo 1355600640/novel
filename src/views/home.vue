@@ -300,12 +300,28 @@
         </a-spin>
       </div>
     </div>
+    <div class="tips" v-if="showTips">
+      <div class="content" @click="showTips = false">
+        <div class="content-session" @click="closeTips">
+          <div class="title-session">公告</div>
+          <div class="title">
+            本网站只提供学习交流，本站内容来自互联网分享
+            <a
+              class="a-hover main-color"
+              href="https://github.com/1355600640/novel"
+              >@github地址</a
+            >
+          </div>
+          <button @click="showTips = false">我已了解</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 <script lang="ts" setup>
 import bookRank from '../components/BookRank.vue'
 import { recommend, announcement, ranking, lastUpdated } from '../api/Home'
-import { Ref, onMounted, ref, reactive } from 'vue'
+import { Ref, onMounted, ref, reactive, watch } from 'vue'
 import { Swiper, SwiperSlide } from 'swiper/vue'
 import typeSwiper from 'swiper'
 import { Autoplay, Navigation, EffectCoverflow } from 'swiper/modules'
@@ -314,6 +330,7 @@ import { useRouter } from 'vue-router'
 import { getHotAuthor, hotAuthor } from '../api/Author'
 import AuthorCard from '../components/author/AuthorCard.vue'
 const router = useRouter()
+let showTips = ref(true)
 const modules = [Autoplay, Navigation, EffectCoverflow]
 type banner = {
   carousel: any[]
@@ -548,6 +565,7 @@ const toggleModulesCategory = (index: number) => {
 }
 
 import { removeOfFrontSpace } from '../utils/commonUtils'
+import Cookie from '../utils/Cookie'
 let hotAuthors = ref<hotAuthor[]>()
 /**
  * 获取热门作家
@@ -563,7 +581,18 @@ const getHotAuthors = () => {
   })
 }
 
+let closeTips = (e: MouseEvent) => {
+  e.stopPropagation()
+}
+
+watch(showTips, () => {
+  Cookie.setCookie({ isRead: false }, 1)
+})
+
 onMounted(() => {
+  if (Cookie.getCookie('isRead')) {
+    showTips.value = false
+  }
   getHomeData().then(() => {
     scrollToShow()
   })
@@ -717,8 +746,8 @@ onMounted(() => {
       .banner_center_image {
         width: 100%;
         height: 100px;
-        background: url('../../public/b3b2e712c31070d2e3a7d43ac83fc4ce.jpeg')
-          no-repeat center center;
+        background: url('/b3b2e712c31070d2e3a7d43ac83fc4ce.jpeg') no-repeat
+          center center;
         background-size: 200% auto;
         margin: 20px 0;
       }
@@ -937,6 +966,56 @@ onMounted(() => {
         }
         &:nth-child(3) {
           background: linear-gradient(135deg, #e2ebfb, white);
+        }
+      }
+    }
+  }
+
+  .tips {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: #0b0b0b87;
+    z-index: 999;
+    .content {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      .content-session {
+        display: flex;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background: white;
+        flex-direction: column;
+        padding: 30px 50px;
+        border-radius: 12px;
+        width: 450px;
+        gap: 40px;
+
+        .title {
+          font-size: 16px;
+          // font-weight: 700;
+          padding: 0 20px;
+          text-align: center;
+        }
+
+        .title-session {
+          font-size: 20px;
+          font-weight: 700;
+        }
+
+        button {
+          background: rgb(var(--qing-color));
+          color: white;
+          border-radius: 12px;
+          width: 100%;
+          font-size: 16px;
+          font-weight: 700;
+          padding: 12px 0;
         }
       }
     }

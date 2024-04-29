@@ -3,7 +3,7 @@
     <div class="author-info">
       <div class="author-image">
         <imgLoading
-          :url="'/api/images' + author.authorImage"
+          :url="store.mainImage + author.authorImage"
           :is-have="true"
           :have-tr="true"
         />
@@ -32,6 +32,8 @@
 <script lang="ts" setup>
 import { hotAuthor } from '../../api/Author'
 import imgLoading from '../../components/ImgLoading.vue'
+import { mainStore } from '../../store'
+let store = mainStore()
 type props = {
   author: hotAuthor
 }

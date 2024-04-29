@@ -3,13 +3,8 @@
     <a-affix @change="showCategory" style="z-index: 99999">
       <div id="hearder">
         <div @click="router.push('/')" class="logo cursor-pointer">
-          <a-image
-            :preview="false"
-            width="50"
-            height="50"
-            src="../../public/book.svg"
-          />
-          <span class="text-xl italic font-bold font-mono">清风文学网</span>
+          <a-image :preview="false" width="50" height="50" src="/book.svg" />
+          <span class="text-xl italic font-bold font-mono">清风文章网</span>
         </div>
         <div
           class="category"
@@ -137,8 +132,9 @@ const getAllCategory = () => {
  */
 const toSearch = () => {
   if (!search.value.trim()) return
+  const name = route.name
   router.push(`/search?keyword=${search.value}`).then(() => {
-    router.go(0)
+    if (name == route.name) router.go(0)
   })
 }
 const showCategory = (fixed: boolean) => {

@@ -90,14 +90,14 @@
 import ImgLoading from '../components/ImgLoading.vue'
 import { ref, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { bookInfo, toSearch, hotSearch } from '../api/BookInfo'
+import { BookInfo, toSearch, hotSearch } from '../api/BookInfo'
 import BookRankList from '../components/rank/BookRankList.vue'
 import error from './404.vue'
 const route = useRoute()
 let pageData = ref<{
   pageSize: number
   limit: number
-  list: bookInfo[]
+  list: BookInfo[]
   searchName: string
   total: number
   loading: boolean
@@ -176,7 +176,7 @@ const getSearchValue = async () => {
     }
   )
 }
-let hotBook = ref<bookInfo[]>()
+let hotBook = ref<BookInfo[]>()
 /**
  * 获取热门搜索
  */

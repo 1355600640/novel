@@ -37,11 +37,10 @@ type Props = {
   session: string
   inContent?: boolean
 }
-const { session, inContent } = defineProps<Props>()
+const { session } = defineProps<Props>()
 onMounted(() => {
-  const pageHeader = document.querySelector('#pageHeader')
-  const footer = document.querySelector('.footer')
-
+  // const pageHeader = document.querySelector('#pageHeader')
+  // const footer = document.querySelector('.footer')
   // if (pageHeader && footer && !inContent)
   //   error.value.style.height =
   //     document.body.clientHeight -
@@ -52,6 +51,7 @@ onMounted(() => {
 </script>
 <style lang="scss" scoped>
 #error {
+  height: 80vh;
   width: 100%;
   box-sizing: border-box;
   overflow: hidden;

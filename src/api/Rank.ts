@@ -1,4 +1,4 @@
-﻿import { get, post, response } from '../utils/RequestUtils'
+﻿import { get,  response } from '../utils/RequestUtils'
 
 const urlPrefix = '/rank'
 

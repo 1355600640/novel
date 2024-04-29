@@ -115,9 +115,9 @@ let getCode = () => {
 onMounted(() => {
   getCode()
 })
-const handleSubmit = ({ values, errors }) => {
+const handleSubmit = ({ errors }: { errors: any }) => {
   let message = ''
-  console.log(1, message == '', errors)
+
   if (errors) return
   if (password.value.oldPwd == password.value.newPwd) {
     message = '新密码不能与新密码一致'

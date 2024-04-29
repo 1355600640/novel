@@ -313,7 +313,7 @@ onMounted(() => {
   --returnButton: 0;
   --backposi: right;
   $transitionSetting: all calc(var(--buttonTransitionDuration) * 1ms) ease;
-  background: url('../../public/background.jpg') no-repeat center center;
+  background: url('/background.jpg') no-repeat center center;
   background-size: 100% 100%;
   // transition: all .3s linear;
   height: 100vh;
@@ -389,8 +389,7 @@ onMounted(() => {
       top: 0;
       left: 0;
       transform: translateX(var(--overlayL)) translateZ(0);
-      background: url('../../public/background.jpg') no-repeat center
-        var(--backposi);
+      background: url('/background.jpg') no-repeat center var(--backposi);
       background-size: 200% 100%;
       // background-position: (var(--overlayL), 0);
       transition: $transitionSetting;

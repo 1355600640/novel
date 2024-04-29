@@ -14,10 +14,10 @@ export const mainStore = defineStore('main', {
     }
     let data: dataType = {
       user: {} as userInfoDto,
-      imgUrl: '/api/images/book',
+      imgUrl: 'http://image.qingfengn.cn/book',
       pageButton: '',
-      userImage: '/api/images',
-      mainImage: '/api/images',
+      userImage: 'http://image.qingfengn.cn',
+      mainImage: 'http://image.qingfengn.cn',
     }
     return { ...data }
   },

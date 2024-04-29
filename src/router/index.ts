@@ -90,7 +90,7 @@ const router = createRouter({
       meta: {
         keepAlive: false,
         pageHeader: true,
-        noLogin: false,
+        noLogin: true,
         showCategory: true,
       },
       component: () => import('../views/Search.vue'),
@@ -150,7 +150,7 @@ const router = createRouter({
       meta: {
         keepAlive: false,
         pageHeader: true,
-        noLogin: false,
+        noLogin: true,
         showCategory: true,
       },
       component: () => import('../views/Review.vue'),
@@ -174,7 +174,7 @@ router.onError((handler) => {
   console.log('error:', handler)
 })
 
-router.beforeEach((to, from, next) => {
+router.beforeEach((to, _from, next) => {
   let token = localStorage.getItem('novel_token_long')
   if (to.meta.noLogin == false && !token) {
     next({

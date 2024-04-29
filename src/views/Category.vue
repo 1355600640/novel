@@ -181,7 +181,7 @@ const getCategory = async () => {
   })
 }
 
-const showList = (parant: pageListType, index: number, child: any) => {
+const showList = (parant: pageListType, _index: number, child: any) => {
   pageData.value.page = 1
   if (parant.stats == 'id') {
     router.push(`/category/${child.id}`)

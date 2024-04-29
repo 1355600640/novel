@@ -11,11 +11,12 @@ export default defineConfig({
     }),
   ],
   server: {
-    port: 6642,
     proxy: {
       '/api': {
+        // target: 'http://www.qingfengn.cn:8802',
         target: 'http://localhost:8802',
         changeOrigin: true,
+        ws: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
     },

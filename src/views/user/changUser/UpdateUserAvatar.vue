@@ -1111,7 +1111,7 @@ onBeforeMount(() => {
             position: absolute;
             left: 0;
             top: 0;
-            $bigHeadW: $uploadW / $selectBoxW * $bigBoxW;
+            $bigHeadW: $uploadW/$selectBoxW * $bigBoxW;
             width: calc($bigHeadW);
             height: calc($bigHeadW);
             // transform: translate(50%, 50%);

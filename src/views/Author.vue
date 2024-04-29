@@ -7,7 +7,7 @@
         <div class="author-img-el">
           <ImgLoading
             :url="
-              '/api/images' +
+              store.mainImage +
               (people.isAuthor
                 ? people?.authorInfo?.authorImage
                 : people?.userInfo?.userPhoto)

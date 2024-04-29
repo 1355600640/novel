@@ -515,6 +515,10 @@ const showReply = (
 const addBookComment = (isReply: number) => {
   // 普通书本评论
   let func
+  if (!store.user.id) {
+    Message.warning('请先登录账号')
+    return
+  }
   if (isReply) {
     // 判断评论内容是否为空
     if (!pageData.value.userReplyContent.trim()) {
@@ -527,10 +531,7 @@ const addBookComment = (isReply: number) => {
       userId: pageData.value.replyUserId,
     })
   } else {
-    if (!store.user) {
-      Message.warning('请先登录账号')
-      return
-    } else if (!pageData.value.replyContent.trim()) {
+    if (!pageData.value.replyContent.trim()) {
       Message.normal('你还没有评论')
       return
     }
@@ -697,7 +698,7 @@ const removeComment = (commentId: string, isReply: boolean) => {
     .then((r) => {
       if (r.data.status == 200) {
         getBookComments(pageData.value.pageSize, pageData.value.limit).then(
-          (r) => {
+          () => {
             Message.success('删除成功')
           }
         )

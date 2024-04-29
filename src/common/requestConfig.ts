@@ -41,7 +41,7 @@ instance.interceptors.response.use(async (response) => {
           token = Cookie.getCookie('novel_token')
         Cookie.clearCookie('novel_token')
         if (longToken && token)
-          return useMianStore.toGetNewToken().then(async (r) => {
+          return useMianStore.toGetNewToken().then(async () => {
             const resp = await instance.request(response.config)
             return resp
           })
