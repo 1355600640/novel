@@ -3,6 +3,7 @@
     <div class="banner">
       <div class="banner_left" ref="bannerEl">
         <div class="swiper-box-left">
+          <!-- TODO 轮播异常,只跳转一次 -->
           <Swiper
             ref="swiper_left"
             class="banner_swiper_left"

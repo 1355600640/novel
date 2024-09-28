@@ -141,23 +141,23 @@ let pageList: Ref<pageListType[]> = ref([
     title: '字数',
     stats: 'words',
     list: [
-      { name: '全部' },
-      { name: '30万字以下' },
-      { name: '30-50万字' },
-      { name: '50-100万字' },
-      { name: '100-200万字' },
-      { name: '200万字以上' },
+      { name: '全部', id: 0 },
+      { name: '30万字以下', id: 1 },
+      { name: '30-50万字', id: 2 },
+      { name: '50-100万字', id: 3 },
+      { name: '100-200万字', id: 4 },
+      { name: '200万字以上', id: 5 },
     ],
   },
   {
     title: '更新时间',
     stats: 'timeSort',
     list: [
-      { name: '全部' },
-      { name: '三日内' },
-      { name: '七日内' },
-      { name: '半月内' },
-      { name: '一月内' },
+      { name: '全部', id: 0 },
+      { name: '三日内', id: 1 },
+      { name: '七日内', id: 2 },
+      { name: '半月内', id: 3 },
+      { name: '一月内', id: 4 },
     ],
   },
 ])
@@ -186,7 +186,8 @@ const showList = (parant: pageListType, _index: number, child: any) => {
   if (parant.stats == 'id') {
     router.push(`/category/${child.id}`)
   } else {
-    ;(pageData as any)[parant.stats] = child.id
+    console.log(parant.stats, child)
+    ;(pageData.value as any)[parant.stats] = child.id
     getBookList()
   }
 }

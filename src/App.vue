@@ -3,16 +3,23 @@
     <PageHeader v-if="route.meta.pageHeader" />
     <NavigationBar v-if="route.meta.navigationBar" />
     <div class="app-center">
-      <router-view
-        v-if="!$route.meta.keepAlive"
-        :key="$route.fullPath"
-        v-slot="{ Component }"
-      >
-        <keep-alive>
-          <component :is="Component" />
-        </keep-alive>
-      </router-view>
-      <router-view v-else="$route.meta.keepAlive"></router-view>
+      <Suspense>
+        <template #default>
+          <router-view
+            v-if="!$route.meta.keepAlive"
+            :key="$route.fullPath"
+            v-slot="{ Component }"
+          >
+            <keep-alive>
+              <component :is="Component" />
+            </keep-alive>
+          </router-view>
+          <router-view v-else="$route.meta.keepAlive"></router-view>
+        </template>
+        <template #fallback>
+          <div class="h-20">加载中...</div>
+        </template>
+      </Suspense>
       <page-footer v-show="!$route.meta.displayBottom" />
     </div>
     <PageButton />

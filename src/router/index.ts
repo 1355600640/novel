@@ -1,5 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { Message } from '@arco-design/web-vue'
+import { defineAsyncComponent } from 'vue'
+import Loading from '../views/Loading.vue'
 
 const router = createRouter({
   history: createWebHistory(),
@@ -17,7 +19,10 @@ const router = createRouter({
         navigationBar: true,
         showCategory: true,
       },
-      component: () => import('../views/Home.vue'),
+      component: defineAsyncComponent({
+        loader: () => import('../views/Home.vue'),
+        loadingComponent: Loading,
+      }),
     },
     {
       path: '/login',
